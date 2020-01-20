@@ -42,12 +42,11 @@ def getChampsInfo(directorioDestino1, directorioDestino2, directorioDestino3, di
         file2 = urllib.request.urlopen(champ_stadics)
         parser2 = BeautifulSoup(file2, 'html.parser')
         champ_info = parser2.find('div', class_='l-champion-statistics-header')
-        name = champ_info.find(
+        champ_name = champ_info.find(
             'h1', class_='champion-stats-header-info__name').string
-        image = champ_info.find(
+        champ_image = champ_info.find(
             'div', class_='champion-stats-header-info__image').find('img')['src']
 
-        writer1.add_document(idChampion= count_champion , name=name, image=image)    
         # Skilless
         skills = champ_info.find_all('div', class_='champion-stat__skill')
         for s in skills:
@@ -65,7 +64,6 @@ def getChampsInfo(directorioDestino1, directorioDestino2, directorioDestino3, di
             skill_video = s.find('a')['href']
             writer2.add_document(name=skill_name, description=skill_description,
                                  video=skill_video, idChampion=count_champion)
-        print('indexado skills')
         # Las positions
         positions = champ_info.find_all(
             'li', class_='champion-stats-header__position')
@@ -107,11 +105,10 @@ def getChampsInfo(directorioDestino1, directorioDestino2, directorioDestino3, di
                 strong_against.append(ch.find(
                     'td', class_='champion-stats-header-matchup__table__champion').text.replace('\n', '').replace('\t', ''))
             position_strong_against_champs[p] = strong_against
-        print('vamos por las tier')
         for key in position_tier.keys():
-            if key == 'Middle':
+            if key == 'Mid':
                 id_position = 2
-            if key == 'Bottom':
+            if key == 'Bot':
                 id_position = 1
             if key == 'Jungle':
                 id_position = 3
@@ -121,17 +118,22 @@ def getChampsInfo(directorioDestino1, directorioDestino2, directorioDestino3, di
                 id_position = 5
             writer4.add_document(rating=position_tier[key], idChampion=count_champion, idPosition=id_position,
                                  idChampionCounter=str(position_counters_champs[key]), idChampionStronger=str(position_strong_against_champs[key]))
-       
-        
-        print('Se han indexado el campeon ' + name + ' ' + 'número ' + count_champion)
+
+        writer1.add_document(idChampion=count_champion, name=str(
+            champ_name), image=str(champ_image))
+
         count_champion = count_champion + 1
- 
 
     writer3.add_document(idPosition=1, name='Bot')
     writer3.add_document(idPosition=2, name='Mid')
     writer3.add_document(idPosition=3, name='Jungle')
     writer3.add_document(idPosition=4, name='Top')
     writer3.add_document(idPosition=5, name='Support')
+    writer1.commit()
+    writer2.commit()
+    writer3.commit()
+    writer4.commit()
+    print('Se han indexado ' + str(count_champion) + ' campeones')
     # Nombre del campeón -> string
     # Nombre de variable -> name
     # Imagen del campeón -> string
@@ -176,4 +178,13 @@ def schemaTier():
     return schema
 
 
-getChampsInfo('champion', 'skills', 'position', 'tier')
+def buscarPorTitulo():
+        directorioDestino = 'champions'
+        ix = open_dir(directorioDestino)      
+        with ix.searcher() as searcher:
+            doc = searcher.documents()
+            for d in doc:
+                print(d['name'])
+
+getChampsInfo('champions','skills','positions','tiers')
+buscarPorTitulo()
