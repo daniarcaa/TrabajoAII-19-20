@@ -1,8 +1,14 @@
-from django.shortcuts import render
+import re
+import urllib.request
 
 from bs4 import BeautifulSoup
-import urllib.request
-import re
+from django.shortcuts import render
+
+from main.models import Champion, Position, Skill, Tier
+from whoosh import qparser
+from whoosh.fields import DATETIME, TEXT, ID, NUMERIC, Schema
+from whoosh.index import create_in, open_dir
+from whoosh.qparser import MultifieldParser, QueryParser
 
 
 def getChampsInfo():
@@ -38,7 +44,7 @@ def getChampsInfo():
         position_list = []
         for p in positions:
             position_list.append(p.find('span', class_ = 'champion-stats-header__position__role').string)
-        position_level = {}
+        position_tier = {}
         position_counters_champs = {}
         position_strong_against_champs = {}
         for p in position_list:
@@ -50,10 +56,10 @@ def getChampsInfo():
             file3 = urllib.request.urlopen(champ_position_url)
             parser3 = BeautifulSoup(file3, 'html.parser')
             champ_info = parser3.find('div', class_ = 'l-champion-statistics-header')
-            level = champ_info.find('div', class_ = 'champion-stats-header-info__tier').find('b').string
-            level = re.match(r'.*(\d)', level)
-            level = level.groups()[0]
-            position_level[p] = level
+            tier = champ_info.find('div', class_ = 'champion-stats-header-info__tier').find('b').string
+            tier = re.match(r'.*(\d)', tier)
+            tier = tier.groups()[0]
+            position_tier[p] = int(tier)
 
             counter_champs_html = champ_info.find_all('table', class_ = 'champion-stats-header-matchup__table')[0].find_all('tr')
             counter_champs = []
@@ -78,3 +84,27 @@ def getChampsInfo():
             #Nombre de variable -> position_counters_champs
         #Campeones fuertes contra según posición -> Diccionario {string, list} -> {posición, [string, string, string]}
             #Nombre de variable -> position_strong_against_champs
+
+def schemaChampions():
+    schema = Schema(idChampion = ID(stored=True),
+                    name = TEXT(stored=True), 
+                    image = TEXT(stored=True))
+    return schema
+
+def schemaSkill():
+    schema = Schema(name = TEXT(stored=True), 
+                    description = TEXT(stored=True),
+                    video = TEXT(stored=True),
+                    idChampion = ID(stored=True))
+    return schema
+
+def schemaPosition():
+    schema = Schema(idPosition = ID(stored=True),
+                    name = TEXT(stored=True))
+    return schema
+
+def schemaTier():
+    schema = Schema(rating = NUMERIC(stored=True),
+                    idChampion = ID(stored=True),
+                    idPosition = ID(stored=True))
+    return schema
