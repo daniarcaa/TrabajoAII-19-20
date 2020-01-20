@@ -29,18 +29,19 @@ class Skill(models.Model):
 class Position(models.Model):
     idPosition = models.AutoField(primary_key = True)
     name = models.CharField(verbose_name='Position', max_length=30)
-
     def __str__(self):
         return self.name
 
     class Meta:
         ordering = ('name',)
 
+
 class Tier(models.Model):
     idChampion = models.ForeignKey(Champion,on_delete=models.CASCADE)
     idPosition = models.ForeignKey(Position,on_delete=models.CASCADE)
     rating = models.PositiveSmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
-
+    idChampionCounter = models.ManyToManyField('Champion')
+    idChampionStronger = models.ManyToManyField('Champion')
     def __str__(self):
         return self.rating
 
