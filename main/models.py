@@ -5,7 +5,6 @@ class Champion(models.Model):
     idChampion = models.AutoField(primary_key = True)
     name = models.CharField(verbose_name='Name', max_length=30)
     image = models.URLField(max_length=200)
-    skills = models.ForeignKey('Skill', verbose_name='Skill', on_delete=models.SET_NULL, null=True)
     tiers = models.ManyToManyField('Tier', through='Tier')
 
     def __str__(self):
@@ -19,6 +18,7 @@ class Skill(models.Model):
     name = models.CharField(verbose_name='Name', max_length=30)
     description = models.CharField(verbose_name='Description')
     video = models.URLField(max_length=200)
+    champion = models.ForeignKey('Champion', verbose_name='Champion', on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.name + ' ' + self.description + ' ' + self.video
