@@ -5,7 +5,7 @@ class Champion(models.Model):
     idChampion = models.AutoField(primary_key = True)
     name = models.CharField(verbose_name='Name', max_length=30)
     image = models.URLField(max_length=200)
-    tiers = models.ManyToManyField('Tier', through='Tier')
+    #tiers = models.ManyToManyField('Tier', through='Tier')
 
     def __str__(self):
         return self.name + ' ' + self.image
@@ -47,3 +47,18 @@ class Tier(models.Model):
 
     class Meta:
         ordering = ('level',)
+
+class Players(models.Model):
+    idPlayer = models.AutoField(primary_key=True)
+    name = models.CharField(verbose_name='Name', max_length=40)
+    urlPerfil = models.URLField(max_length=200)
+    ranking = models.CharField(verbose_name='ranking', max_length=30)
+    winrate = models.DecimalField(max_digits=3, decimal_places=2)
+    idChampion = models.ManyToManyField('Champion')
+    def __str__(self):
+        return self.name + ' ' + self.ranking + ' ' + self.winrate
+
+    class Meta:
+        ordering = ('name', 'ranking', 'winrate')
+
+
