@@ -146,7 +146,7 @@ def getChampsInfo():
     writer2.commit()
 
     #Añadimos los niveles al esquema de niveles
-    #En idChampionCounter e idChampionStronger se guardan en string separado por comas las ids de los campeones 
+    #En idsChampionCounter e idsChampionStronger se guardan en string separado por comas las ids de los campeones 
     ix_champs = open_dir(champions_directory)
     ix_positions = open_dir(positions_directory)
     count_tier = 1
@@ -178,18 +178,6 @@ def getChampsInfo():
                     count_tier = count_tier + 1
     writer4.commit()     
     print('Se han indexado ' + str(count_tier-1) + ' niveles según la posición del campeón')             
-    # Nombre del campeón -> string
-    # Nombre de variable -> name
-    # Imagen del campeón -> string
-    # Nombre de variable -> image
-    # Habilidades del campeón -> Diccionario {string, list} -> {nombre de la skill, [descripción, video]} #Debe haber siempre 5 skills
-    # Nombre de variable -> skill_list
-    # Tier según posición -> Diccionario {string, string} -> {posición, numero del tier}
-    # Nombre de variable -> position_level
-    # Campeones counters según posición -> Diccionario {string, list} -> {posición, [string, string, string]}
-    # Nombre de variable -> position_counters_champs
-    # Campeones fuertes contra según posición -> Diccionario {string, list} -> {posición, [string, string, string]}
-    # Nombre de variable -> position_strong_against_champs
 
 
 def schemaChampions():
