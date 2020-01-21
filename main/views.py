@@ -21,8 +21,6 @@ def index(request):
     return render(request, 'index.html', {'STATIC_URL': settings.STATIC_URL})
 
 
-
-
 def getChampsInfo():
     main_directory = 'info_champ'
     champions_directory = main_directory + '/' + 'champions'
@@ -364,7 +362,7 @@ def populate_champion():
         doc = searcher.documents()
         for row in doc:
             lista.append(
-                Champion(idChampion=row['idChampion'], name=row['name'], image=row['image']))
+                Champion(idChampion=row['idChampion'], name=row['name'], image=row['image'], releaseDate=row['releaseDate']))
     Champion.objects.bulk_create(lista)
     print("Champion inserted: " + str(Champion.objects.count()))
     print("---------------------------------------------------------")
@@ -389,7 +387,6 @@ def populate_player():
                       )
             listChampion = []
             for id in row['idsChampion'].split(','):
-                print(id)
                 champion = Champion.objects.get( idChampion = id )
                 listChampion.append(champion)
             p.save()
