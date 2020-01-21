@@ -1,7 +1,6 @@
 import re
 
 import urllib.request
-import re
 import os
 from bs4 import BeautifulSoup
 from django.shortcuts import render
@@ -12,11 +11,16 @@ from whoosh.index import create_in, open_dir
 from whoosh.qparser import MultifieldParser, QueryParser
 from django.conf import settings
 
-from main.models import Champion, Skill, Position, Tier, Players
+from datetime import datetime
+
+
+from main.models import Champion, Skill, Position, Tier, Player
 
 
 def index(request):
     return render(request, 'index.html', {'STATIC_URL': settings.STATIC_URL})
+
+
 
 
 def getChampsInfo():
@@ -57,11 +61,14 @@ def getChampsInfo():
     # Empezamos el scraping de los campeones y su información
     count_champion = 1
     count_skill = 1
-    url = 'https://euw.op.gg/champion/statistics'
-    file = urllib.request.urlopen(url)
-    parser = BeautifulSoup(file, 'html.parser')
-    champions = parser.find_all(
-        lambda tag: tag.name == 'div' and 'champion-index__champion-item' in tag.get('class') and 'tip' not in tag.get('class'))
+    url_statistics = 'https://euw.op.gg/champion/statistics'
+    url_releases = 'https://lol.gamepedia.com/Portal:Champions/List'
+    file_statistics = urllib.request.urlopen(url_statistics)
+    file_release = urllib.request.urlopen(url_releases)
+    parser_statistics = BeautifulSoup(file_statistics, 'html.parser')
+    parser_release = BeautifulSoup(file_release, 'html.parser')
+    champions_statistics = parser_statistics.find_all(lambda tag: tag.name == 'div' and 'champion-index__champion-item' in tag.get('class') and 'tip' not in tag.get('class'))
+    champions_release = parser_release.find('table', class_ = ['sortable', 'wikitable', 'smwtable', 'jquery-tablesorter']).find_all('tr')[1:]
 
     # Diccionarios para almacenar datos temporalmente
     name_id_champ = {}
@@ -69,7 +76,19 @@ def getChampsInfo():
     name_position_tier = {}
     name_position_counters_champs = {}
     name_position_strong_against_champs = {}
-    for c in champions:
+    name_position_winrate = {}
+    name_release_date = {}
+    
+    # Fechas de salidas de los campeones
+    for c in champions_release:
+        champ_name = c.find_all('td')[0].find('a')['title']
+        if champ_name == 'Nunu':
+            champ_name = 'Nunu & Willump'
+        release_date = c.find_all('td')[-2].string.strip()
+        release_date = datetime.strptime(release_date, '%Y-%m-%d')
+        name_release_date[champ_name] = release_date
+        
+    for c in champions_statistics:
         champ_stadics = c.find('a')['href']
         champ_stadics = 'https://euw.op.gg/' + champ_stadics
         file2 = urllib.request.urlopen(champ_stadics)
@@ -77,22 +96,18 @@ def getChampsInfo():
         champ_info = parser2.find('div', class_='l-champion-statistics-header')
 
         # Nombre e imagen del campeón
-        champ_name = champ_info.find(
-            'h1', class_='champion-stats-header-info__name').string
-        champ_image = champ_info.find(
-            'div', class_='champion-stats-header-info__image').find('img')['src']
+        champ_name = champ_info.find('h1', class_='champion-stats-header-info__name').string
+        champ_image = champ_info.find('div', class_='champion-stats-header-info__image').find('img')['src']
         name_id_champ[champ_name] = count_champion
 
         # Habilidades del campeón
         skills = champ_info.find_all('div', class_='champion-stat__skill')
         for s in skills:
             html_skill = s['title']
-            html_skill = html_skill.replace('<br>', '\n').replace(
-                '<br/>', '\n').replace('<br />', '\n')
+            html_skill = html_skill.replace('<br>', '\n').replace('<br/>', '\n').replace('<br />', '\n')
             parser_skill = BeautifulSoup(html_skill, 'html.parser')
             skill_name = parser_skill.find('b').string
-            skill_description = parser_skill.find(
-                lambda tag: tag.name == 'span' and not tag.attrs)
+            skill_description = parser_skill.find(lambda tag: tag.name == 'span' and not tag.attrs)
             if skill_description is None:
                 skill_description = ''
             else:
@@ -100,21 +115,19 @@ def getChampsInfo():
             skill_video = s.find('a')['href']
 
             # Añadimos las hablidades al esquema de habilidades
-            writer2.add_document(name=skill_name, description=skill_description,
-                                 video=skill_video, idChampion=count_champion)
+            writer2.add_document(name=skill_name, description=skill_description, video=skill_video, idChampion=count_champion)
             count_skill = count_skill + 1
 
         # Posiciones del campeón
-        positions = champ_info.find_all(
-            'li', class_='champion-stats-header__position')
+        positions = champ_info.find_all('li', class_='champion-stats-header__position')
         position_list = []
         for p in positions:
-            position_list.append(
-                p.find('span', class_='champion-stats-header__position__role').string)
+            position_list.append(p.find('span', class_='champion-stats-header__position__role').string)
         name_positions_champ[champ_name] = position_list
         position_tier = {}
         position_counters_champs = {}
         position_strong_against_champs = {}
+        position_winrate = {}
         for p in position_list:
             if p == 'Middle':
                 p = 'Mid'
@@ -123,42 +136,42 @@ def getChampsInfo():
             champ_position_url = champ_stadics + '/' + p
             file3 = urllib.request.urlopen(champ_position_url)
             parser3 = BeautifulSoup(file3, 'html.parser')
-            champ_info = parser3.find(
-                'div', class_='l-champion-statistics-header')
+            champ_info = parser3.find('div', class_='l-champion-statistics-header')
 
             # Nivel del campeón según la posición
-            tier = champ_info.find(
-                'div', class_='champion-stats-header-info__tier').find('b').string
+            tier = champ_info.find('div', class_='champion-stats-header-info__tier').find('b').string
             tier = re.match(r'.*(\d)', tier)
             tier = tier.groups()[0]
             position_tier[p] = int(tier)
 
             # Campeones contra los que es débil el campeón "c" según la posición
-            counter_champs_html = champ_info.find_all(
-                'table', class_='champion-stats-header-matchup__table')[0].find_all('tr')
+            counter_champs_html = champ_info.find_all('table', class_='champion-stats-header-matchup__table')[0].find_all('tr')
             counter_champs = []
             for ch in counter_champs_html:
-                counter_champs.append(ch.find(
-                    'td', class_='champion-stats-header-matchup__table__champion').text.replace('\n', '').replace('\t', ''))
+                counter_champs.append(ch.find('td', class_='champion-stats-header-matchup__table__champion').text.replace('\n', '').replace('\t', ''))
             position_counters_champs[p] = counter_champs
 
             # Campeones contra los que es fuerte el campeón "c" según la posición
-            strong_against_champs = champ_info.find_all(
-                'table', class_='champion-stats-header-matchup__table')[1].find_all('tr')
+            strong_against_champs = champ_info.find_all('table', class_='champion-stats-header-matchup__table')[1].find_all('tr')
             strong_against = []
             for ch in strong_against_champs:
-                strong_against.append(ch.find(
-                    'td', class_='champion-stats-header-matchup__table__champion').text.replace('\n', '').replace('\t', ''))
+                strong_against.append(ch.find('td', class_='champion-stats-header-matchup__table__champion').text.replace('\n', '').replace('\t', ''))
             position_strong_against_champs[p] = strong_against
+            
+            # Winrate según la posición
+            champ_info_body = parser3.find('div', class_='champion-box--trend')
+            winrate = float(champ_info_body.find('div', class_='champion-stats-trend-rate').string.strip().replace('%', ''))
+            position_winrate[p] = winrate
 
-        # Se guarda un diccionario relacionado con cada nombre y otro diccionario de tier, counters y strongs según la posición
+
+        # Se guarda un diccionario relacionado con cada nombre y otro diccionario de tier, counters, strongs y winrate según la posición
         name_position_tier[champ_name] = position_tier
         name_position_counters_champs[champ_name] = position_counters_champs
         name_position_strong_against_champs[champ_name] = position_strong_against_champs
+        name_position_winrate[champ_name] = position_winrate
 
         # Añadimos los campeones al esquema de campeones
-        writer1.add_document(idChampion=count_champion, name=str(
-            champ_name), image=str(champ_image))
+        writer1.add_document(idChampion=count_champion, name=str(champ_name), image=str(champ_image), releaseDate=name_release_date[str(champ_name)])
         count_champion = count_champion + 1
 
     print('Se han indexado ' + str(count_champion-1) + ' campeones')
@@ -178,34 +191,28 @@ def getChampsInfo():
             for p in position_tier.keys():  # En p tengo la posición (Mid, Top, etc) que tenga el campeón
                 position_counters_champs = name_position_counters_champs[dc['name']]
                 position_strong_against_champs = name_position_strong_against_champs[dc['name']]
+                position_winrate = name_position_winrate[dc['name']]
                 ids_champions_counters = []
                 ids_champions_strongers = []
                 for pcc in position_counters_champs[p]:
-                    query = QueryParser(
-                        'name', ix_champs.schema).parse(str(pcc))
+                    query = QueryParser('name', ix_champs.schema).parse(str(pcc))
                     doc_champs_results = searcher_champs.search(query)
                     ids_champions_counters.append(
                         str(doc_champs_results[0]['idChampion']))
                 for psac in position_strong_against_champs[p]:
-                    query = QueryParser(
-                        'name', ix_champs.schema).parse(str(psac))
+                    query = QueryParser('name', ix_champs.schema).parse(str(psac))
                     doc_champs_results = searcher_champs.search(query)
-                    ids_champions_strongers.append(
-                        str(doc_champs_results[0]['idChampion']))
+                    ids_champions_strongers.append(str(doc_champs_results[0]['idChampion']))
                 seperator = ', '
                 ids_champions_counters = seperator.join(ids_champions_counters)
-                ids_champions_strongers = seperator.join(
-                    ids_champions_strongers)
+                ids_champions_strongers = seperator.join(ids_champions_strongers)
                 with ix_positions.searcher() as searcher_positions:
-                    query = QueryParser(
-                        'name', ix_positions.schema).parse(str(p))
+                    query = QueryParser('name', ix_positions.schema).parse(str(p))
                     doc_positions_results = searcher_positions.search(query)
-                    writer4.add_document(level=position_tier[p], idChampion=name_id_champ[dc['name']], idPosition=doc_positions_results[0]['idPosition'],
-                                         idsChampionCounter=ids_champions_counters, idsChampionStronger=ids_champions_strongers)
+                    writer4.add_document(level=position_tier[p], idChampion=name_id_champ[dc['name']], idPosition=doc_positions_results[0]['idPosition'], idsChampionCounter=ids_champions_counters, idsChampionStronger=ids_champions_strongers, winrate=position_winrate[p])
                     count_tier = count_tier + 1
     writer4.commit()
-    print('Se han indexado ' + str(count_tier-1) +
-          ' niveles según la posición del campeón')
+    print('Se han indexado ' + str(count_tier-1) + ' niveles según la posición del campeón')
 
 
 def getPlayerInfo():
@@ -218,7 +225,7 @@ def getPlayerInfo():
     ix1 = create_in(players_directory, schema=schemaPlayers())
     writer1 = ix1.writer()
     page = 1
-    limit = 8
+    limit = 1
     count_players = 1
     while(page <= limit):
         # Accedemos a la página
@@ -298,12 +305,14 @@ def getPlayerInfo():
     print('Se han indexado ' + str(count_players-1) + ' jugadores')
 
 
+
+
 def schemaChampions():
     schema = Schema(idChampion=NUMERIC(stored=True),
                     name=TEXT(stored=True),
-                    image=TEXT(stored=True))
+                    image=TEXT(stored=True),
+                    releaseDate=DATETIME(stored=True))
     return schema
-
 
 def schemaSkill():
     schema = Schema(name=TEXT(stored=True),
@@ -324,10 +333,10 @@ def schemaTier():
                     idChampion=NUMERIC(stored=True),
                     idPosition=NUMERIC(stored=True),
                     idsChampionCounter=TEXT(stored=True),
-                    idsChampionStronger=TEXT(stored=True))
+                    idsChampionStronger=TEXT(stored=True),
+                    winrate=NUMERIC(stored=True))
     return schema
-
-
+    
 def schemaPlayers():
     schema = Schema(idPlayer=NUMERIC(stored=True),
                     name=TEXT(stored=True),
@@ -336,6 +345,12 @@ def schemaPlayers():
                     winrate=NUMERIC(stored=True),
                     idsChampion=TEXT(stored=True))
     return schema
+
+
+def populate(request):
+    populate_champion()
+    populate_player()
+    return render(request, 'index.html', {'STATIC_URL': settings.STATIC_URL})
 
 
 def populate_champion():
@@ -351,7 +366,36 @@ def populate_champion():
             lista.append(
                 Champion(idChampion=row['idChampion'], name=row['name'], image=row['image']))
     Champion.objects.bulk_create(lista)
-    print("Ratings inserted: " + str(Champion.objects.count()))
+    print("Champion inserted: " + str(Champion.objects.count()))
+    print("---------------------------------------------------------")
+
+
+def populate_player():
+    print("Loading player...")
+    Player.objects.all().delete()
+    main_directory = 'info_champ'
+    directory = main_directory + '/' + 'players'
+    lista = []
+    ix = open_dir(directory)
+    with ix.searcher() as searcher:
+        doc = searcher.documents()
+        for row in doc:
+            
+            p =Player(idPlayer=row['idPlayer'],
+                       name=row['name'],
+                       urlPerfil=row['urlPerfil'],
+                       ranking=row['ranking'],
+                       winrate=row['winrate']
+                      )
+            listChampion = []
+            for id in row['idsChampion'].split(','):
+                print(id)
+                champion = Champion.objects.get( idChampion = id )
+                listChampion.append(champion)
+            p.save()
+            p.idsChampion.set(listChampion)
+            lista.append(p)
+    print("Player inserted: " + str(Player.objects.count()))
     print("---------------------------------------------------------")
 
 
@@ -366,6 +410,7 @@ def getIdByChampionName(champ_name):
         row = results[0]
         id = row['idChampion']
     return id
+
 
 
 def list_campeones(request):
@@ -384,7 +429,3 @@ def mejores_campeones(request):
 
 def mejores_jugadores(request):
     return render(request, 'mejores_jugadores.html', {'STATIC_URL': settings.STATIC_URL})
-
-
-
-populate_champion()

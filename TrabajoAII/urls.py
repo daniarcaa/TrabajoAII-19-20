@@ -19,6 +19,7 @@ from main import views
 
 urlpatterns = [
     path('', views.index),
+    path('populate/', views.populate),
     path('list_campeones/', views.list_campeones),
     path('list_jugadores/', views.list_jugadores),
     path('mejores_campeones/', views.mejores_campeones),
