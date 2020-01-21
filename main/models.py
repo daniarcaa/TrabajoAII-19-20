@@ -37,13 +37,13 @@ class Position(models.Model):
 
 
 class Tier(models.Model):
+    level = models.PositiveSmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
     idChampion = models.ForeignKey(Champion,on_delete=models.CASCADE)
     idPosition = models.ForeignKey(Position,on_delete=models.CASCADE)
-    rating = models.PositiveSmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
-    idChampionCounter = models.ManyToManyField('Champion')
-    idChampionStronger = models.ManyToManyField('Champion')
+    idsChampionCounter = models.ManyToManyField('Champion')
+    idsChampionStronger = models.ManyToManyField('Champion')
     def __str__(self):
-        return self.rating
+        return self.level
 
     class Meta:
-        ordering = ('rating',)
+        ordering = ('level',)
