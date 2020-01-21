@@ -348,6 +348,8 @@ def schemaPlayers():
 def populate(request):
     populate_champion()
     populate_player()
+    populate_position()
+    populate_skill()
     return render(request, 'index.html', {'STATIC_URL': settings.STATIC_URL})
 
 
@@ -367,6 +369,46 @@ def populate_champion():
     print("Champion inserted: " + str(Champion.objects.count()))
     print("---------------------------------------------------------")
 
+def populate_position():
+    print("Loading position...")
+    Position.objects.all().delete()
+    main_directory = 'info_champ'
+    directory = main_directory + '/' + 'positions'
+    lista = []
+    ix = open_dir(directory)
+    with ix.searcher() as searcher:
+        doc = searcher.documents()
+        for row in doc:
+            lista.append(
+                Position(idPosition=row['idPosition'], name=row['name']))
+    Position.objects.bulk_create(lista)
+    print("Position inserted: " + str(Position.objects.count()))
+    print("---------------------------------------------------------")
+
+
+def populate_skill():
+    print("Loading skill...")
+    Skill.objects.all().delete()
+    main_directory = 'info_champ'
+    directory = main_directory + '/' + 'skills'
+    lista = []
+    ix = open_dir(directory)
+    with ix.searcher() as searcher:
+        doc = searcher.documents()
+        for row in doc:
+            
+            p =Skill(name=row['name'],
+                    description=row['description'],
+                    video=row['video'] )
+            listChampion = []
+            for id in row['idsChampion'].split(','):
+                champion = Champion.objects.get( idChampion = id )
+                listChampion.append(champion)
+            p.save()
+            p.idsChampion.set(listChampion)
+            lista.append(p)
+    print("Skill inserted: " + str(Skill.objects.count()))
+    print("---------------------------------------------------------")
 
 def populate_player():
     print("Loading player...")
@@ -394,6 +436,7 @@ def populate_player():
             lista.append(p)
     print("Player inserted: " + str(Player.objects.count()))
     print("---------------------------------------------------------")
+
 
 
 def getIdByChampionName(champ_name):
