@@ -1,0 +1,24 @@
+{% extends 'master.html' %}
+
+{% block titulo %} Lista de los jugadores {% endblock %}
+
+{% block list_jugadores %} uk-active {% endblock %}
+
+
+{% block contenido %} 
+    <div class="uk-animation-fade">
+	    <div class="uk-accordion" data-uk-accordion="{collapse: false}">
+	    	{% regroup jugadores by name as grouped %}
+	    	{% for group in grouped %}
+		    	<!-- <h3 class="uk-accordion-title">Nombre del jugador: {{group.grouper}} ({{group.list|length}} jugadores)</h3> -->
+		    	<div class="uk-accordion-content">
+		    		<ul class="uk-list uk-list-striped">
+		    		{% for player in group.list %}
+						<li><strong>Nombre del jugador:</strong> {{player.name}} | <strong>Id jugador:</strong> {{player.idPlayer}} | <strong>URL perfil:</strong> {{player.urlPerfil}} | <strong>Puesto en el ranking:</strong> {{player.ranking}} | <strong>Porcentaje de victorias/derrotas:</strong> {{player.winrate}}</li>
+					{% endfor %}
+				    </ul>
+		    	</div>
+	    	{% endfor %}
+		</div>
+	</div>
+{% endblock %}

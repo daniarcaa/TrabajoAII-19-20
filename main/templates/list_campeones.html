@@ -1,0 +1,24 @@
+{% extends 'master.html' %}
+
+{% block titulo %} Lista de los campeones {% endblock %}
+
+{% block list_campeones %} uk-active {% endblock %}
+
+
+{% block contenido %} 
+    <div class="uk-animation-fade">
+	    <div class="uk-accordion" data-uk-accordion="{collapse: false}">
+	    	{% regroup campeones by name as grouped %}
+	    	{% for group in grouped %}
+		    	<!-- <h3 class="uk-accordion-title">Nombre del campeón: {{group.grouper}} ({{group.list|length}} jugadores)</h3> -->
+		    	<div class="uk-accordion-content">
+		    		<ul class="uk-list uk-list-striped">
+		    		{% for champion in group.list %}
+						<li><strong>Nombre del campeón:</strong> {{champion.name}} | <strong>Imagen:</strong> {{champion.image}}</li>
+					{% endfor %}
+				    </ul>
+		    	</div>
+	    	{% endfor %}
+		</div>
+	</div>
+{% endblock %}

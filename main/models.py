@@ -16,7 +16,7 @@ class Champion(models.Model):
 class Skill(models.Model):
     idSkill = models.AutoField(primary_key = True)
     name = models.CharField(verbose_name='Name', max_length=30)
-    description = models.CharField(verbose_name='Description')
+    description = models.CharField(verbose_name='Description', max_length=3000)
     video = models.URLField(max_length=200)
     champion = models.ForeignKey('Champion', verbose_name='Champion', on_delete=models.SET_NULL, null=True)
 
@@ -38,10 +38,10 @@ class Position(models.Model):
 
 class Tier(models.Model):
     level = models.PositiveSmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
-    idChampion = models.ForeignKey(Champion,on_delete=models.CASCADE)
-    idPosition = models.ForeignKey(Position,on_delete=models.CASCADE)
-    idsChampionCounter = models.ManyToManyField('Champion')
-    idsChampionStronger = models.ManyToManyField('Champion')
+    idChampion = models.ForeignKey(Champion,on_delete=models.CASCADE, related_name='idChampionTier')
+    idPosition = models.ForeignKey(Position,on_delete=models.CASCADE, related_name='idPositionTier')
+    idsChampionCounter = models.ManyToManyField('Champion', related_name='ChampionCounter')
+    idsChampionStronger = models.ManyToManyField('Champion', related_name='ChampionStronger')
     def __str__(self):
         return self.level
 

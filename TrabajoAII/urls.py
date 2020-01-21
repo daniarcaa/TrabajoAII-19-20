@@ -15,7 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from main import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('', views.index),
+    path('list_campeones/', views.list_campeones),
+    path('list_jugadores/', views.list_jugadores),
+    path('mejores_campeones/', views.mejores_campeones),
+    path('mejores_jugadores/', views.mejores_jugadores),
 ]

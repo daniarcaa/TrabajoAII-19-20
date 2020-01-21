@@ -11,7 +11,12 @@ from whoosh import qparser
 from whoosh.fields import DATETIME, TEXT, ID, NUMERIC, Schema
 from whoosh.index import create_in, open_dir
 from whoosh.qparser import MultifieldParser, QueryParser
+from django.conf import settings
 
+from main.models import Champion, Skill, Position, Tier, Players
+
+def index(request):
+    return render(request, 'index.html',{'STATIC_URL':settings.STATIC_URL})
 
 def getChampsInfo():
     main_directory = 'info_champ'
@@ -289,6 +294,7 @@ def getPlayerInfo():
     writer1.commit()    
     print('Se han indexado ' + str(count_players-1) +
           ' jugadores.')
+          
 def schemaChampions():
     schema = Schema(idChampion=NUMERIC(stored=True),
                     name=TEXT(stored=True),
@@ -328,6 +334,11 @@ def schemaPlayers():
                     idsChampion=TEXT(stored=True))
     return schema
 
+def populate_champion():
+    print("Loading champions...")
+    Champion.objects.all().delete()
+
+    lista[]
 
 def getIdByChampionName(champ_name):
     main_directory = 'info_champ'
@@ -341,5 +352,16 @@ def getIdByChampionName(champ_name):
         id = row['idChampion']
     return id
 
+def list_campeones(request):
+    campeones = Champion.objects.all().order_by('name')
+    return render(request, 'list_campeones.html',{'campeones':campeones, 'STATIC_URL':settings.STATIC_URL})
 
-getPlayerInfo()
+def list_jugadores(request):
+    jugadores = Players.objects.all().order_by('name')
+    return render(request, 'list_jugadores.html',{'jugadores':jugadores, 'STATIC_URL':settings.STATIC_URL})
+
+def mejores_campeones(request):
+    return render(request, 'mejores_campeones.html',{'STATIC_URL':settings.STATIC_URL})
+
+def mejores_jugadores(request):
+    return render(request, 'mejores_jugadores.html',{'STATIC_URL':settings.STATIC_URL})
