@@ -1,38 +1,50 @@
 <!DOCTYPE html>
 <html lang='es'>
-  <head>
+
+<head>
 	<meta charset='utf-8'>
 
-		<link rel="stylesheet" href="{{STATIC_URL}}css/uikit.min.css" />
-		<link rel="stylesheet" href="{{STATIC_URL}}css/components/accordion.min.css" />
-		<link rel="stylesheet" href="{{STATIC_URL}}css/components/datepicker.min.css" />
-        <script src="{{STATIC_URL}}js/jquery.min.js"></script>
-        <script src="{{STATIC_URL}}js/uikit.min.js"></script>
-        <script src="{{STATIC_URL}}js/components/accordion.min.js"></script>
-        <script src="{{STATIC_URL}}js/components/datepicker.min.js"></script>
+	<link rel="stylesheet" href="{{STATIC_URL}}css/uikit.min.css" />
+	<link rel="stylesheet" href="{{STATIC_URL}}css/components/accordion.min.css" />
+	<link rel="stylesheet" href="{{STATIC_URL}}css/components/datepicker.min.css" />
+	<script src="{{STATIC_URL}}js/jquery.min.js"></script>
+	<script src="{{STATIC_URL}}js/uikit.min.js"></script>
+	<script src="{{STATIC_URL}}js/components/accordion.min.js"></script>
+	<script src="{{STATIC_URL}}js/components/datepicker.min.js"></script>
 
-  </head>
-  <body>
-  	<div class="uk-container uk-container-center uk-margin-top uk-margin-large-bottom">
-	    <h1>ScrappiLOL</h1>
-	    <nav class="uk-navbar">
-		    <ul class="uk-navbar-nav">
-		    	<li class="{% block poblarBDActiva %} {% endblock %}"><a href="/populate">Poblar Base de Datos - Acceso Restringido</a></li>
-		        <li class="{% block list_campeones %} {% endblock %}"><a href="/list_campeones">Lista de campeones</a></li>
-		        <li class="{% block list_jugadores %} {% endblock %}"><a href="/list_jugadores">Lista de jugadores</a></li>
-		        <li class="{% block best_campeones %} {% endblock %}"><a href="/mejores_campeones">Mejores campeones</a></li>
-		        <li class="{% block best_jugadores %} {% endblock %}"><a href="/mejores_jugadores">Mejores jugadores</a></li>
-		        <li><a href="/">Inicio</a></li>
-		    </ul>
+</head>
+
+<body>
+	<div class="uk-container uk-container-center uk-margin-top uk-margin-large-bottom">
+		<h1>ScrappiLOL</h1>
+		<nav class="uk-navbar">
+			<ul class="uk-navbar-nav">
+				<li class="{% block poblarBDActiva %} {% endblock %}"><a href="/populate">Poblar Base de Datos - Acceso
+						Restringido</a></li>
+				<li class="{% block list_campeones %} {% endblock %}"><a href="/list_campeones">Lista de campeones</a>
+				</li>
+				<li class="{% block list_jugadores %} {% endblock %}"><a href="/list_jugadores">Lista de jugadores</a>
+				</li>
+				<li class="{% block best_campeones %} {% endblock %}"><a href="/mejores_campeones">Mejores campeones</a>
+				</li>
+				<li class="{% block best_jugadores %} {% endblock %}"><a href="/mejores_jugadores">Mejores jugadores</a>
+				</li>
+				<li class="{% block counterest_campeones %} {% endblock %}"><a href="/counterest_campeones">Campeones
+						que más hacen counter</a></li>
+				<li class="{% block weak_campeones %} {% endblock %}"><a href="/weak_campeones">Campeones más
+						débiles</a></li>
+				<li><a href="/">Inicio</a></li>
+			</ul>
 		</nav>
 
 		<hr>
- 		
- 		<h1 class="uk-article-title">{% block titulo %} {% endblock %}</h1>
+
+		<h1 class="uk-article-title">{% block titulo %} {% endblock %}</h1>
 
 		<div class="contenido">
-		{% block contenido %} {% endblock %}
+			{% block contenido %} {% endblock %}
 		</div>
 	</div>
-  </body>
+</body>
+
 </html>

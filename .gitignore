@@ -5,6 +5,7 @@ __pycache__/
 
 # C extensions
 *.so
+info_champ/
 
 # Distribution / packaging
 .Python

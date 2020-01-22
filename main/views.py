@@ -4,7 +4,7 @@ import urllib.request
 import os
 from bs4 import BeautifulSoup
 from django.shortcuts import render
-
+from collections import Counter
 from whoosh import qparser
 from whoosh.fields import DATETIME, TEXT, ID, NUMERIC, Schema
 from whoosh.index import create_in, open_dir
@@ -13,7 +13,7 @@ from django.conf import settings
 
 from datetime import datetime
 
-from django.db.models import Avg
+from django.db.models import Avg, Count
 from main.models import Champion, Skill, Position, Tier, Player
 
 
@@ -551,8 +551,41 @@ def mejores_campeones(request):
     for id in idChampions:
         campeones.append(Champion.objects.get(idChampion=id['idChampion']))
 
-    return render(request, 'list_campeones.html', {'campeones': campeones, 'campeones_bot': campeones_bot, 'campeones_mid': campeones_mid, 'campeones_jungle': campeones_jungle, 'campeones_top': campeones_top, 'campeones_support': campeones_support,
+    return render(request, 'mejores_campeones.html', {'campeones': campeones, 'campeones_bot': campeones_bot, 'campeones_mid': campeones_mid, 'campeones_jungle': campeones_jungle, 'campeones_top': campeones_top, 'campeones_support': campeones_support,
                                                    'STATIC_URL': settings.STATIC_URL})
+
+def counterestChamps(request):
+    idChampions = Tier.objects.values('idsChampionCounter')
+    
+    campeones = []
+    for id in idChampions:
+        campeones.append(id['idsChampionCounter'])
+    result = Counter(campeones).most_common()[:5]
+    cam = []
+    for r in result:
+        cam.append(r[0])
+    campeones = []
+    for id in cam:
+        campeones.append(Champion.objects.get(idChampion=id))
+
+    return render(request, 'list_campeones.html', {'campeones': campeones, 'STATIC_URL': settings.STATIC_URL})
+
+def weakChamps(request):
+    idChampions = Tier.objects.values('idsChampionStronger')
+    
+    campeones = []
+    for id in idChampions:
+        campeones.append(id['idsChampionStronger'])
+    result = Counter(campeones).most_common()[:5]
+    repet = result[0][1]
+    cam = []
+    for r in result:
+        cam.append(r[0])
+    campeones = []
+    for id in cam:
+        campeones.append(Champion.objects.get(idChampion=id))
+    
+    return render(request, 'list_campeones.html', {'campeones': campeones, 'STATIC_URL': settings.STATIC_URL})
 
 
 def mejores_jugadores(request):
