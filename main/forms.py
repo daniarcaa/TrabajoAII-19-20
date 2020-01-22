@@ -29,3 +29,7 @@ class PositionBusquedaForm(forms.Form):
 class PositionTierBusquedaForm(forms.Form):
     level = forms.CharField(label="Nivel de los campeones", widget=forms.RadioSelect(choices=LEVEL), required=True)
     positionName = forms.CharField(label="Posición de los campeones", widget=forms.RadioSelect(choices=POSITION), required=True)
+
+class ChampionDatesBusquedaForm(forms.Form):
+    startDate = forms.DateField(label="Fecha de inicio", widget=forms.TextInput, required=True)
+    endDate = forms.DateField(label="Fecha de fin", widget=forms.TextInput, required=True)

@@ -30,6 +30,7 @@ urlpatterns = [
     path('campeones_posicion/', views.list_campeones_por_posicion),
     path('list_campeones_por_posicion_tier/', views.list_campeones_por_posicion_tier),
     path('seach_champion/', views.getChampionByName),
+    path('seach_champions_dates/', views.getChampionByRangeDates),
     path('seach_player/', views.getPlayerByName),
     path('recomend_champion/', views.recomendacionChampion),
     path('recomend_player/', views.recomendacionPlayer)
