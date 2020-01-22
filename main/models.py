@@ -7,7 +7,6 @@ class Champion(models.Model):
     name = models.CharField(verbose_name='Name', max_length=30)
     image = models.URLField(max_length=200)
     releaseDate = models.DateField(verbose_name='Release date')
-    #tiers = models.ManyToManyField('Tier', through='Tier')
 
     def __str__(self):
         return self.name + ' ' + self.image
@@ -43,12 +42,14 @@ class Position(models.Model):
 
 class Tier(models.Model):
     idTier = models.AutoField(primary_key=True)
-    level = models.PositiveSmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+    level = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(5)])
     idChampion = models.ForeignKey(Champion, on_delete=models.CASCADE, related_name='idChampionTier')
     idPosition = models.ForeignKey(Position, on_delete=models.CASCADE, related_name='idPositionTier')
     idsChampionCounter = models.ManyToManyField('Champion', related_name='ChampionCounter')
     idsChampionStronger = models.ManyToManyField('Champion', related_name='ChampionStronger')
     winrate = models.DecimalField(max_digits=5, decimal_places=2)
+
     def __str__(self):
         return self.level
 
