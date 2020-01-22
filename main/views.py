@@ -339,6 +339,7 @@ def populate(request):
     populate_player()
     populate_position()
     populate_skill()
+    populate_tier()
     return render(request, 'index.html', {'STATIC_URL': settings.STATIC_URL})
 
 def populate_champion():
@@ -408,6 +409,40 @@ def populate_player():
     print("Player inserted: " + str(Player.objects.count()))
     print("---------------------------------------------------------")
 
+
+def populate_tier():
+    print("Loading Tier...")
+    Tier.objects.all().delete()
+    main_directory = 'info_champ'
+    directory = main_directory + '/' + 'tiers'
+    lista = []
+    ix = open_dir(directory)
+    with ix.searcher() as searcher:
+        doc = searcher.documents()
+        for row in doc:
+            
+
+            champion = Champion.objects.get(idChampion = row['idChampion'])     
+            position = Position.objects.get(idPosition = row['idPosition'])   
+            p = Tier(idTier= row['idTier'],
+                    level= row['level'],
+                    winrate= row['winrate'], idChampion =champion ,idPosition = position)
+            ids_champion_counter_list = []
+            for id in row['idsChampionCounter'].split(','):
+                champion = Champion.objects.get(idChampion = id)
+                ids_champion_counter_list.append(champion)
+            ids_champion_stronger_list = []
+            for id in row['idsChampionStronger'].split(','):
+                champion = Champion.objects.get(idChampion = id)
+                ids_champion_stronger_list.append(champion)    
+            p.save()
+            p.idsChampionCounter.set(ids_champion_counter_list)
+            p.idsChampionStronger.set(ids_champion_stronger_list)
+            lista.append(p)
+    print("Tier inserted: " + str(Tier.objects.count()))
+    print("---------------------------------------------------------")
+
+
 def getIdByChampionName(champ_name):
     main_directory = 'info_champ'
     champions_directory = main_directory + '/' + 'champions'
@@ -426,7 +461,7 @@ def list_campeones(request):
 
 
 def list_jugadores(request):
-    jugadores = Players.objects.all().order_by('name')
+    jugadores = Player.objects.all().order_by('name')
     return render(request, 'list_jugadores.html', {'jugadores': jugadores, 'STATIC_URL': settings.STATIC_URL})
 
 

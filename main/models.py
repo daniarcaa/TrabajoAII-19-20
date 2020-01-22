@@ -48,7 +48,7 @@ class Tier(models.Model):
     idPosition = models.ForeignKey(Position, on_delete=models.CASCADE, related_name='idPositionTier')
     idsChampionCounter = models.ManyToManyField('Champion', related_name='ChampionCounter')
     idsChampionStronger = models.ManyToManyField('Champion', related_name='ChampionStronger')
-    winrate = models.DecimalField(max_digits=3, decimal_places=2)
+    winrate = models.DecimalField(max_digits=3, decimal_places=1)
     def __str__(self):
         return self.level
 
