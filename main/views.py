@@ -381,6 +381,12 @@ def populate(request):
     populate_tier()
     return render(request, 'index.html', {'STATIC_URL': settings.STATIC_URL})
 
+def populateWhoosh(request):
+    print("---------------------------------------------------------")
+    getChampsInfo()
+    getPlayerInfo()
+    return render(request, 'index.html', {'STATIC_URL': settings.STATIC_URL})
+
 
 def populate_champion():
     print("Loading champions...")
@@ -560,6 +566,34 @@ def mejores_jugadores(request):
         avg_rating=Avg('winrate')).order_by('-avg_rating')[:3]
     return render(request, 'list_jugadores.html', {'jugadores': jugadores, 'STATIC_URL': settings.STATIC_URL})
 
+def list_campeones_por_posicion(request):
+    idChampions = Tier.objects.filter(idPosition_id=1).values('idChampion')
+    campeones_bot = []
+    for id in idChampions:
+        campeones_bot.append(Champion.objects.get(idChampion=id['idChampion']))
+    
+    idChampions = Tier.objects.filter(idPosition_id=2).values('idChampion')
+    campeones_mid = []
+    for id in idChampions:
+        campeones_mid.append(Champion.objects.get(idChampion=id['idChampion']))
+    
+    idChampions = Tier.objects.filter(idPosition_id=3).values('idChampion')
+    campeones_jungle = []
+    for id in idChampions:
+        campeones_jungle.append(Champion.objects.get(idChampion=id['idChampion']))
+    
+    idChampions = Tier.objects.filter(idPosition_id=4).values('idChampion')
+    campeones_top = []
+    for id in idChampions:
+        campeones_top.append(Champion.objects.get(idChampion=id['idChampion']))
+
+    idChampions = Tier.objects.filter(idPosition_id=5).values('idChampion')
+    campeones_support = []
+    for id in idChampions:
+        campeones_support.append(Champion.objects.get(idChampion=id['idChampion']))
+
+    return render(request, 'campeones_posicion.html', {'campeones_bot': campeones_bot, 'campeones_mid': campeones_mid, 'campeones_jungle': campeones_jungle, 'campeones_top': campeones_top, 'campeones_support': campeones_support,
+                                                   'STATIC_URL': settings.STATIC_URL})
 
 # getChampsInfo()
 # getPlayerInfo()
