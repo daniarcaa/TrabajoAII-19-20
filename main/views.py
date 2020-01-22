@@ -12,8 +12,7 @@ from whoosh.qparser import MultifieldParser, QueryParser
 from django.conf import settings
 
 from datetime import datetime
-from decimal import Decimal
-from forms import ChampionBusquedaForm, PlayerBusquedaForm
+from main.forms import ChampionBusquedaForm, PlayerBusquedaForm, TierBusquedaForm, PositionBusquedaForm, PositionTierBusquedaForm
 from django.db.models import Avg, Count
 from main.models import Champion, Skill, Position, Tier, Player
 
@@ -646,10 +645,16 @@ def list_campeones_por_posicion(request):
                                                    'STATIC_URL': settings.STATIC_URL})
 
 def list_campeones_por_posicion_tier(request):
-    idPosition = Position.objects.filter(name = request.GET[name])
-    idChampions = Tier.objects.filter(idPosition_id=idPosition && level=request.GET[level]).values('idChampion')
-    campeones = []
-    for id in idChampions:
-        campeones.append(Champion.objects.get(idChampion=id['idChampion']))
+    formulario = PositionBusquedaForm()
+    campeones = None
 
-    return render(request, 'campeones_posicion_nivel.html', {'campeones': campeones, 'STATIC_URL': settings.STATIC_URL})
+    if request.method=='POST':
+        formulario = PositionTierBusquedaForm(request.POST)
+        
+        if formulario.is_valid():
+            idPosition = Position.objects.filter(name = request.GET['positionName'])
+            idChampions = Tier.objects.filter(idPosition_id=idPosition, level=request.GET[level]).values('idChampion')
+            for id in idChampions:
+                campeones.append(Champion.objects.get(idChampion=id['idChampion']))
+
+    return render(request, 'buscar_camp_pos_lev.html', {'campeones': campeones, 'STATIC_URL': settings.STATIC_URL})
