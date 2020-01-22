@@ -95,12 +95,9 @@ def getChampsInfo():
         file2 = urllib.request.urlopen(champ_stadics)
         parser2 = BeautifulSoup(file2, 'html.parser')
         champ_info = parser2.find('div', class_='l-champion-statistics-header')
-
         # Nombre e imagen del campeón
-        champ_name = champ_info.find(
-            'h1', class_='champion-stats-header-info__name').string
-        champ_image = champ_info.find(
-            'div', class_='champion-stats-header-info__image').find('img')['src']
+        champ_name = champ_info.find('h1', class_='champion-stats-header-info__name').string
+        champ_image = champ_info.find('div', class_='champion-stats-header-info__image').find('img')['src']
         name_id_champ[champ_name] = count_champion
 
         # Habilidades del campeón
@@ -232,7 +229,7 @@ def getChampsInfo():
                         'name', ix_positions.schema).parse(str(p))
                     doc_positions_results = searcher_positions.search(query)
                     writer4.add_document(idTier=count_tier, level=position_tier[p], idChampion=name_id_champ[dc['name']], idPosition=doc_positions_results[
-                                         0]['idPosition'], idsChampionCounter=ids_champions_counters, idsChampionStronger=ids_champions_strongers, winrate=Decimal(position_winrate[p]))
+                                         0]['idPosition'], idsChampionCounter=ids_champions_counters, idsChampionStronger=ids_champions_strongers, winrate=position_winrate[p])
                     count_tier = count_tier + 1
     writer4.commit()
     print('Se han indexado ' + str(count_tier-1) +
@@ -286,7 +283,7 @@ def getPlayerInfo():
                 champ_list_id = seperator.join(champ_list_id)
                 # Se guarda el jugador
                 writer1.add_document(idPlayer=count_players, name=higher_name, urlPerfil=higher_url,
-                                     ranking=ranking, winrate=Decimal(winrate), idsChampion=champ_list_id)
+                                     ranking=ranking, winrate=winrate, idsChampion=champ_list_id)
                 # Se incrementa el id del jugador
                 count_players = count_players + 1
 
@@ -319,7 +316,7 @@ def getPlayerInfo():
             seperator = ', '
             champ_list_id = seperator.join(champ_list_id)
             # Se guarda el jugador
-            writer1.add_document(idPlayer=count_players, name=normal_name, urlPerfil=normal_url, ranking=normal_ranking, winrate=Decimal(normal_winrate), idsChampion=champ_list_id)
+            writer1.add_document(idPlayer=count_players, name=normal_name, urlPerfil=normal_url, ranking=normal_ranking, winrate=normal_winrate, idsChampion=champ_list_id)
             # Se incrementa el id del jugador
             count_players = count_players + 1
         # Se incrementa para acceder a la siguiente página
@@ -367,7 +364,7 @@ def schemaPlayers():
                     name=TEXT(stored=True),
                     urlPerfil=TEXT(stored=True),
                     ranking=TEXT(stored=True),
-                    winrate=NUMERIC(stored=True, decimal_places=2),
+                    winrate=NUMERIC(stored=True),
                     idsChampion=TEXT(stored=True))
     return schema
 
@@ -473,7 +470,6 @@ def populate_tier():
     with ix.searcher() as searcher:
         doc = searcher.documents()
         for row in doc:
-
             champion = Champion.objects.get(idChampion=row['idChampion'])
             position = Position.objects.get(idPosition=row['idPosition'])
             p = Tier(idTier=row['idTier'],

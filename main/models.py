@@ -48,7 +48,7 @@ class Tier(models.Model):
     idPosition = models.ForeignKey(Position, on_delete=models.CASCADE, related_name='idPositionTier')
     idsChampionCounter = models.ManyToManyField('Champion', related_name='ChampionCounter')
     idsChampionStronger = models.ManyToManyField('Champion', related_name='ChampionStronger')
-    winrate = models.DecimalField(max_digits=3, decimal_places=2)
+    winrate = models.DecimalField(max_digits=5, decimal_places=2)
     def __str__(self):
         return self.level
 
@@ -61,7 +61,7 @@ class Player(models.Model):
     name = models.CharField(verbose_name='Name', max_length=40)
     urlPerfil = models.URLField(max_length=200)
     ranking = models.CharField(verbose_name='ranking', max_length=30)
-    winrate = models.DecimalField(max_digits=3, decimal_places=2)
+    winrate = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)])
     idsChampion = models.ManyToManyField('Champion')
 
     def __str__(self):
