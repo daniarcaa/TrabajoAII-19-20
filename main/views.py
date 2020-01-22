@@ -510,28 +510,32 @@ def getIdByChampionName(champ_name):
 def getChampionByName(request):
     formulario = ChampionBusquedaForm()
     campeones = None
-
+    skills = None
+    tiers = None
+    positions = []
     if request.method == 'POST':
         formulario = ChampionBusquedaForm(request.POST)
 
         if formulario.is_valid():
             campeones = Champion.objects.filter(
                 name=formulario.cleaned_data['champion_name'])
-
-    return render(request, 'busqueda_champions.html', {'formulario': formulario, 'campeones': campeones, 'STATIC_URL': settings.STATIC_URL})
+            for champ in campeones:
+                skills = Skill.objects.filter(champion=champ.idChampion)
+                tiers = Tier.objects.filter(idChampion=champ.idChampion)
+                for tie in tiers:
+                    positions.append(Position.objects.get(name=tie.idPosition))
+    return render(request, 'busqueda_champions.html', {'formulario': formulario, 'campeones': campeones, 'skills': skills, 'positions': positions, 'STATIC_URL': settings.STATIC_URL})
 
 
 def getPlayerByName(request):
     formulario = PlayerBusquedaForm()
     jugadores = None
-
     if request.method == 'POST':
         formulario = PlayerBusquedaForm(request.POST)
 
         if formulario.is_valid():
             jugadores = Player.objects.filter(
                 name=formulario.cleaned_data['player_name'])
-
     return render(request, 'busqueda_players.html', {'formulario': formulario, 'jugadores': jugadores, 'STATIC_URL': settings.STATIC_URL})
 
 
@@ -644,11 +648,14 @@ def list_campeones_por_posicion(request):
             data = formulario.cleaned_data['positionName']
             pos = ['Top', 'Bot', 'Support', 'Jungle', 'Mid']
             if data in pos:
-                idPosition = Position.objects.get(name=formulario.cleaned_data['positionName'])
-                idChampions = Tier.objects.filter(idPosition_id=idPosition).values('idChampion')
+                idPosition = Position.objects.get(
+                    name=formulario.cleaned_data['positionName'])
+                idChampions = Tier.objects.filter(
+                    idPosition_id=idPosition).values('idChampion')
                 campeones = []
                 for id in idChampions:
-                    campeones.append(Champion.objects.get(idChampion=id['idChampion']))
+                    campeones.append(Champion.objects.get(
+                        idChampion=id['idChampion']))
 
     return render(request, 'campeones_posicion.html', {'campeones': campeones, 'STATIC_URL': settings.STATIC_URL})
 

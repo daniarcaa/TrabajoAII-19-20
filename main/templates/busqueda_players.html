@@ -24,13 +24,23 @@
 
     <hr>
 
+
     {% if jugadores %}
     <dl class="uk-description-list-line">
 
         {% for row in jugadores %}
         <dt>{{row.name}}</dt>
-        {% endfor %}
+        <dt>{{row.urlPerfil}}</dt>
+        <dt>{{row.ranking}}</dt>
+        <dt>{{row.winrate}}</dt>
 
+        <dd> Campeones usados:
+            {% for champ in row.idsChampion.all %}
+            {{champ.name}}
+            <img id="output" name="img" alt="Display Picture" src="{{champ.image}}" />
+            {% endfor %}
+        </dd>
+        {% endfor %}
     </dl>
 
     {% endif %}
