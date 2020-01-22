@@ -12,7 +12,8 @@ from whoosh.qparser import MultifieldParser, QueryParser
 from django.conf import settings
 
 from datetime import datetime
-
+from decimal import Decimal
+from forms import ChampionBusquedaForm, PlayerBusquedaForm
 from django.db.models import Avg, Count
 from main.models import Champion, Skill, Position, Tier, Player
 
@@ -502,6 +503,29 @@ def getIdByChampionName(champ_name):
         id = row['idChampion']
     return id
 
+def getChampionByName(request):
+    formulario = ChampionBusquedaForm()
+    campeones = None
+    
+    if request.method=='POST':
+        formulario = ChampionBusquedaForm(request.POST)
+        
+        if formulario.is_valid():
+            campeones = Champion.objects.filter(name=formulario.cleaned_data['champion_name'])
+            
+    return render(request, 'list_campeones.html', {'campeones': campeones, 'STATIC_URL': settings.STATIC_URL})
+
+def getPlayerByName(request):
+    formulario = PlayerBusquedaForm()
+    jugadores = None
+    
+    if request.method=='POST':
+        formulario = PlayerBusquedaForm(request.POST)
+        
+        if formulario.is_valid():
+            jugadores = Player.objects.filter(name=formulario.cleaned_data['player_name'])
+            
+    return render(request, 'list_jugadores.html', {'jugadores': jugadores, 'STATIC_URL': settings.STATIC_URL})
 
 def list_campeones(request):
     campeones = Champion.objects.all().order_by('name')
