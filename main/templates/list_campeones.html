@@ -14,7 +14,7 @@
 		    	<div class="uk-accordion-content">
 		    		<ul class="uk-list uk-list-striped">
 		    		{% for champion in group.list %}
-						<li><strong>Nombre del campeón:</strong> {{champion.name}} | <strong>Imagen:</strong> {{champion.image}}</li>
+						<li><strong>Nombre del campeón:</strong> {{champion.name}} | <strong>Imagen:</strong> <img id="output" name="img" alt="Display Picture" src="{{champion.image}}" /></li>
 					{% endfor %}
 				    </ul>
 		    	</div>
