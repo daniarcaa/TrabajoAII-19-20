@@ -9,102 +9,84 @@
 <div class="uk-animation-fade">
     <div class="uk-accordion" data-uk-accordion="{collapse: false}">
         <h3 class="uk-accordion-title">Mejores campeones global:</h3>
-        {% regroup campeones by name as grouped %}
-        {% for group in grouped %}
         <div class="uk-accordion-content">
             <ul class="uk-list uk-list-striped">
-                {% for champion in group.list %}
-                <li><strong>Nombre del campeón:</strong> {{champion.name}} | <strong>Imagen:</strong> <img id="output"
-                        name="img" alt="Display Picture" src="{{champion.image}}" /></li>
+                {% for key, value in campeones.items %}
+                <li><strong>Nombre del campeón:</strong> {{key.name}} | <strong>Imagen:</strong> <img id="output"
+                        name="img" alt="Display Picture" src="{{key.image}}" /> | <strong>Porcentaje de victoria:</strong> {{value}} %</li>
                 {% endfor %}
             </ul>
         </div>
-        {% endfor %}
     </div>
 </div>
 
 <div class="uk-animation-fade">
     <div class="uk-accordion" data-uk-accordion="{collapse: false}">
-        <h3 class="uk-accordion-title">Mejores campeones linea superior:</h3>
-        {% regroup campeones_top by name as grouped %}
-        {% for group in grouped %}
+        <h3 class="uk-accordion-title">Mejores campeones de línea superior:</h3>
         <div class="uk-accordion-content">
             <ul class="uk-list uk-list-striped">
-                {% for champion in group.list %}
-                <li><strong>Nombre del campeón:</strong> {{champion.name}} | <strong>Imagen:</strong> <img id="output"
-                        name="img" alt="Display Picture" src="{{champion.image}}" /></li>
+                {% for key, value in campeones_top.items %}
+                <li><strong>Nombre del campeón:</strong> {{key.name}} | <strong>Imagen:</strong> <img id="output"
+                        name="img" alt="Display Picture" src="{{key.image}}" /> | <strong>Porcentaje de victoria:</strong> {{value}} %</li>
                 {% endfor %}
             </ul>
         </div>
-        {% endfor %}
     </div>
 </div>
 
 <div class="uk-animation-fade">
     <div class="uk-accordion" data-uk-accordion="{collapse: false}">
-        <h3 class="uk-accordion-title">Mejores campeones linea central:</h3>
-        {% regroup campeones_mid by name as grouped %}
-        {% for group in grouped %}
+        <h3 class="uk-accordion-title">Mejores campeones de línea de medio:</h3>
         <div class="uk-accordion-content">
             <ul class="uk-list uk-list-striped">
-                {% for champion in group.list %}
-                <li><strong>Nombre del campeón:</strong> {{champion.name}} | <strong>Imagen:</strong> <img id="output"
-                        name="img" alt="Display Picture" src="{{champion.image}}" /></li>
+                {% for key, value in campeones_mid.items %}
+                <li><strong>Nombre del campeón:</strong> {{key.name}} | <strong>Imagen:</strong> <img id="output"
+                        name="img" alt="Display Picture" src="{{key.image}}" /> | <strong>Porcentaje de victoria:</strong> {{value}} %</li>
                 {% endfor %}
             </ul>
         </div>
-        {% endfor %}
     </div>
 </div>
 
 <div class="uk-animation-fade">
     <div class="uk-accordion" data-uk-accordion="{collapse: false}">
-        <h3 class="uk-accordion-title">Mejores campeones linea inferior:</h3>
-        {% regroup campeones_bot by name as grouped %}
-        {% for group in grouped %}
+        <h3 class="uk-accordion-title">Mejores campeones de línea inferior:</h3>
         <div class="uk-accordion-content">
             <ul class="uk-list uk-list-striped">
-                {% for champion in group.list %}
-                <li><strong>Nombre del campeón:</strong> {{champion.name}} | <strong>Imagen:</strong> <img id="output"
-                        name="img" alt="Display Picture" src="{{champion.image}}" /></li>
+                {% for key, value in campeones_bot.items %}
+                <li><strong>Nombre del campeón:</strong> {{key.name}} | <strong>Imagen:</strong> <img id="output"
+                        name="img" alt="Display Picture" src="{{key.image}}" /> | <strong>Porcentaje de victoria:</strong> {{value}} %</li>
                 {% endfor %}
             </ul>
         </div>
-        {% endfor %}
     </div>
 </div>
 
 <div class="uk-animation-fade">
     <div class="uk-accordion" data-uk-accordion="{collapse: false}">
-        <h3 class="uk-accordion-title">Mejores campeones jungla:</h3>
-        {% regroup campeones_jungle by name as grouped %}
-        {% for group in grouped %}
+        <h3 class="uk-accordion-title">Mejores campeones de jungla:</h3>
         <div class="uk-accordion-content">
             <ul class="uk-list uk-list-striped">
-                {% for champion in group.list %}
-                <li><strong>Nombre del campeón:</strong> {{champion.name}} | <strong>Imagen:</strong> <img id="output"
-                        name="img" alt="Display Picture" src="{{champion.image}}" /></li>
+                {% for key, value in campeones_jungle.items %}
+                <li><strong>Nombre del campeón:</strong> {{key.name}} | <strong>Imagen:</strong> <img id="output"
+                        name="img" alt="Display Picture" src="{{key.image}}" /> | <strong>Porcentaje de victoria:</strong> {{value}} %</li>
                 {% endfor %}
             </ul>
         </div>
-        {% endfor %}
     </div>
 </div>
 
 <div class="uk-animation-fade">
     <div class="uk-accordion" data-uk-accordion="{collapse: false}">
         <h3 class="uk-accordion-title">Mejores campeones de apoyo:</h3>
-        {% regroup campeones_support by name as grouped %}
-        {% for group in grouped %}
         <div class="uk-accordion-content">
             <ul class="uk-list uk-list-striped">
-                {% for champion in group.list %}
-                <li><strong>Nombre del campeón:</strong> {{champion.name}} | <strong>Imagen:</strong> <img id="output"
-                        name="img" alt="Display Picture" src="{{champion.image}}" /></li>
+                {% for key, value in campeones_support.items %}
+                <li><strong>Nombre del campeón:</strong> {{key.name}} | <strong>Imagen:</strong> <img id="output"
+                        name="img" alt="Display Picture" src="{{key.image}}" /> | <strong>Porcentaje de victoria:</strong> {{value}} %</li>
                 {% endfor %}
             </ul>
         </div>
-        {% endfor %}
     </div>
 </div>
 {% endblock %}
