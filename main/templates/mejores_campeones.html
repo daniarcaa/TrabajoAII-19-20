@@ -15,7 +15,7 @@
             <ul class="uk-list uk-list-striped">
                 {% for champion in group.list %}
                 <li><strong>Nombre del campeón:</strong> {{champion.name}} | <strong>Imagen:</strong> <img id="output"
-                        name="img" alt="Display Picture" src="{{champion.image}}" /></li>
+                        name="img" alt="Display Picture" src="{{champion.image}}" /> | <strong>Ratio V/D:</strong> {{champion.avg_rating | floatformat:"2"}}</li>
                 {% endfor %}
             </ul>
         </div>

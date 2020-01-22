@@ -551,7 +551,7 @@ def mejores_campeones(request):
     for id in idChampions:
         campeones.append(Champion.objects.get(idChampion=id['idChampion']))
 
-    return render(request, 'list_campeones.html', {'campeones': campeones, 'campeones_bot': campeones_bot, 'campeones_mid': campeones_mid, 'campeones_jungle': campeones_jungle, 'campeones_top': campeones_top, 'campeones_support': campeones_support,
+    return render(request, 'mejores_campeones.html', {'campeones': campeones, 'campeones_bot': campeones_bot, 'campeones_mid': campeones_mid, 'campeones_jungle': campeones_jungle, 'campeones_top': campeones_top, 'campeones_support': campeones_support,
                                                    'STATIC_URL': settings.STATIC_URL})
 
 
