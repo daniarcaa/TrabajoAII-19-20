@@ -360,11 +360,11 @@ def schemaPlayers():
 @login_required(login_url='/ingresar')
 def populateDjango(request):
     print('---------------------------------------------------------')
-    populate_champion()
-    populate_player()
     populate_position()
+    populate_champion()
     populate_skill()
     populate_tier()
+    populate_player()
     logout(request)
     return(HttpResponseRedirect('/index'))
 
