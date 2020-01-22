@@ -12,6 +12,7 @@ from whoosh.qparser import MultifieldParser, QueryParser
 from django.conf import settings
 
 from datetime import datetime
+from decimal import Decimal
 
 from django.db.models import Avg
 from main.models import Champion, Skill, Position, Tier, Player
@@ -231,7 +232,7 @@ def getChampsInfo():
                         'name', ix_positions.schema).parse(str(p))
                     doc_positions_results = searcher_positions.search(query)
                     writer4.add_document(idTier=count_tier, level=position_tier[p], idChampion=name_id_champ[dc['name']], idPosition=doc_positions_results[
-                                         0]['idPosition'], idsChampionCounter=ids_champions_counters, idsChampionStronger=ids_champions_strongers, winrate=position_winrate[p])
+                                         0]['idPosition'], idsChampionCounter=ids_champions_counters, idsChampionStronger=ids_champions_strongers, winrate=Decimal(position_winrate[p]))
                     count_tier = count_tier + 1
     writer4.commit()
     print('Se han indexado ' + str(count_tier-1) +
@@ -285,7 +286,7 @@ def getPlayerInfo():
                 champ_list_id = seperator.join(champ_list_id)
                 # Se guarda el jugador
                 writer1.add_document(idPlayer=count_players, name=higher_name, urlPerfil=higher_url,
-                                     ranking=ranking, winrate=winrate, idsChampion=champ_list_id)
+                                     ranking=ranking, winrate=Decimal(winrate), idsChampion=champ_list_id)
                 # Se incrementa el id del jugador
                 count_players = count_players + 1
 
@@ -318,8 +319,7 @@ def getPlayerInfo():
             seperator = ', '
             champ_list_id = seperator.join(champ_list_id)
             # Se guarda el jugador
-            writer1.add_document(idPlayer=count_players, name=normal_name, urlPerfil=normal_url,
-                                 ranking=normal_ranking, winrate=normal_winrate, idsChampion=champ_list_id)
+            writer1.add_document(idPlayer=count_players, name=normal_name, urlPerfil=normal_url, ranking=normal_ranking, winrate=Decimal(normal_winrate), idsChampion=champ_list_id)
             # Se incrementa el id del jugador
             count_players = count_players + 1
         # Se incrementa para acceder a la siguiente página
@@ -358,7 +358,7 @@ def schemaTier():
                     idPosition=NUMERIC(stored=True),
                     idsChampionCounter=TEXT(stored=True),
                     idsChampionStronger=TEXT(stored=True),
-                    winrate=NUMERIC(stored=True))
+                    winrate=NUMERIC(stored=True, decimal_places=2))
     return schema
 
 
@@ -367,7 +367,7 @@ def schemaPlayers():
                     name=TEXT(stored=True),
                     urlPerfil=TEXT(stored=True),
                     ranking=TEXT(stored=True),
-                    winrate=NUMERIC(stored=True),
+                    winrate=NUMERIC(stored=True, decimal_places=2),
                     idsChampion=TEXT(stored=True))
     return schema
 
@@ -592,6 +592,3 @@ def list_campeones_por_posicion(request):
 
     return render(request, 'campeones_posicion.html', {'campeones_bot': campeones_bot, 'campeones_mid': campeones_mid, 'campeones_jungle': campeones_jungle, 'campeones_top': campeones_top, 'campeones_support': campeones_support,
                                                    'STATIC_URL': settings.STATIC_URL})
-
-# getChampsInfo()
-# getPlayerInfo()
