@@ -27,6 +27,11 @@ from sklearn.feature_extraction.text import CountVectorizer
 
 from rake_nltk import Rake
 
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.decorators import login_required
+from django.http.response import HttpResponseRedirect, HttpResponse
+
 
 def index(request):
     return render(request, 'index.html', {'STATIC_URL': settings.STATIC_URL})
@@ -381,23 +386,64 @@ def schemaPlayers():
                     idsChampion=TEXT(stored=True))
     return schema
 
-
-def populate(request):
+@login_required(login_url='/ingresar')
+def populateDjango(request):
     print("---------------------------------------------------------")
     populate_champion()
     populate_player()
     populate_position()
     populate_skill()
     populate_tier()
-    return render(request, 'index.html', {'STATIC_URL': settings.STATIC_URL})
+    logout(request)
+    return(HttpResponseRedirect('/index'))
 
-
+@login_required(login_url='/ingresar')
 def populateWhoosh(request):
     print("---------------------------------------------------------")
     getChampsInfo()
     getPlayerInfo()
-    return render(request, 'index.html', {'STATIC_URL': settings.STATIC_URL})
+    logout(request)
+    return(HttpResponseRedirect('/index'))
 
+def ingresarWhoosh(request):
+    if request.user.is_authenticated:
+        return(HttpResponseRedirect('/populate_django'))
+    formulario = AuthenticationForm()
+    if request.method=='POST':
+        formulario = AuthenticationForm(request.POST)
+        usuario=request.POST['username']
+        clave=request.POST['password']
+        acceso=authenticate(username=usuario,password=clave)
+        if acceso is not None:
+            if acceso.is_active:
+                login(request, acceso)
+                return (HttpResponseRedirect('/populate_django'))
+            else:
+                return (HttpResponse('<html><body>ERROR: USUARIO NO ACTIVO </body></html>'))
+        else:
+            return (HttpResponse('<html><body><b>ERROR: USUARIO O CONTARSE&Ntilde;A INCORRECTOS</b><br><a href=/index>Volver a la página principal</a></body></html>'))
+                     
+    return render(request, 'ingresar.html', {'formulario':formulario})
+
+def ingresarDjango(request):
+    if request.user.is_authenticated:
+        return(HttpResponseRedirect('/populate_whoosh'))
+    formulario = AuthenticationForm()
+    if request.method=='POST':
+        formulario = AuthenticationForm(request.POST)
+        usuario=request.POST['username']
+        clave=request.POST['password']
+        acceso=authenticate(username=usuario,password=clave)
+        if acceso is not None:
+            if acceso.is_active:
+                login(request, acceso)
+                return (HttpResponseRedirect('/populate_whoosh'))
+            else:
+                return (HttpResponse('<html><body>ERROR: USUARIO NO ACTIVO </body></html>'))
+        else:
+            return (HttpResponse('<html><body><b>ERROR: USUARIO O CONTARSE&Ntilde;A INCORRECTOS</b><br><a href=/index>Volver a la página principal</a></body></html>'))
+                     
+    return render(request, 'ingresar.html', {'formulario':formulario})
 
 def populate_champion():
     print("Loading champions...")

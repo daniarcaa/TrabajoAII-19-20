@@ -19,7 +19,8 @@ from main import views
 
 urlpatterns = [
     path('', views.index),
-    path('populate/', views.populate),
+    path('index', views.index),
+    path('populate_django/', views.populateDjango),
     path('populate_whoosh/', views.populateWhoosh),
     path('list_campeones/', views.list_campeones),
     path('list_jugadores/', views.list_jugadores),
@@ -33,5 +34,8 @@ urlpatterns = [
     path('seach_champions_dates/', views.getChampionByRangeDates),
     path('seach_player/', views.getPlayerByName),
     path('recomend_champion/', views.recomendacionChampion),
-    path('recomend_player/', views.recomendacionPlayer)
+    path('recomend_player/', views.recomendacionPlayer),
+    path('ingresar/', views.ingresarWhoosh),
+    path('ingresar/', views.ingresarDjango),
+    path('admin/',admin.site.urls)
 ]
