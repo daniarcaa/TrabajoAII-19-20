@@ -652,8 +652,9 @@ def list_campeones_por_posicion_tier(request):
         formulario = PositionTierBusquedaForm(request.POST)
         
         if formulario.is_valid():
-            idPosition = Position.objects.filter(name = request.GET['positionName'])
-            idChampions = Tier.objects.filter(idPosition_id=idPosition, level=request.GET[level]).values('idChampion')
+            idPosition = Position.objects.get(name = formulario.cleaned_data['positionName'])
+            idChampions = Tier.objects.filter(idPosition_id=idPosition, level=formulario.cleaned_data['level']).values('idChampion')
+            campeones = []
             for id in idChampions:
                 campeones.append(Champion.objects.get(idChampion=id['idChampion']))
 
