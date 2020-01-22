@@ -1,0 +1,40 @@
+{% extends 'master.html' %}
+
+{% block titulo %} Recomendación de campeones {% endblock %}
+
+
+{% block recomendChampion %} uk-active {% endblock %}
+
+{% block paginaActiva %}
+<li class="uk-active"><span>Recomendación de campeones</span></li>
+{% endblock %}
+
+
+{% block contenido %}
+<div class="uk-animation-slide-bottom">
+    <form class="uk-form" id="formulario" method="post" action=''>{% csrf_token %}
+        <fieldset>
+            <legend>Recomendación de campeones</legend>
+            <input type="text" name="champion_name" id="champion_name" placeholder="Nombre del campeón" />
+            <BR><BR>
+
+            <input class="uk-button" type='submit' value='Realizar Busqueda' />
+        </fieldset>
+    </form>
+
+    <hr>
+
+    {% if campeones %}
+    <dl class="uk-description-list-line">
+
+        {% for row in campeones %}
+        <dt>{{row.name}}</dt>
+        <dt><img id="output" name="img" alt="Display Picture" src="{{row.image}}" /></dt>
+        <dt>{{row.releaseDate}}</dt>
+        {% endfor %}
+
+    </dl>
+
+    {% endif %}
+</div>
+{% endblock %}

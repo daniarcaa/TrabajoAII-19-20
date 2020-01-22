@@ -16,6 +16,17 @@ from main.forms import ChampionBusquedaForm, PlayerBusquedaForm, TierBusquedaFor
 from django.db.models import Avg, Count
 from main.models import Champion, Skill, Position, Tier, Player
 
+import pandas as pd
+from astropy.table import QTable, Table, Column
+from astropy import units as u
+import numpy as np
+
+from sklearn.metrics.pairwise import cosine_similarity
+
+from sklearn.feature_extraction.text import CountVectorizer
+
+from rake_nltk import Rake
+
 
 def index(request):
     return render(request, 'index.html', {'STATIC_URL': settings.STATIC_URL})
@@ -694,3 +705,70 @@ def list_campeones_por_posicion_tier(request):
                         idChampion=id['idChampion']))
 
     return render(request, 'buscar_camp_pos_lev.html', {'campeones': campeones, 'STATIC_URL': settings.STATIC_URL})
+
+
+
+def recomendacionChampion(request):
+    formulario = ChampionBusquedaForm()
+    campeones = None
+    dat= []
+    champDat = []
+    datos = {}
+    if request.method=='POST':
+        formulario = ChampionBusquedaForm(request.POST)
+        
+        if formulario.is_valid():
+            campeones = Champion.objects.all()
+            for champ in campeones:
+                tiers = Tier.objects.filter(idChampion = champ.idChampion)
+                for tie in tiers:
+                    position = Position.objects.get(name = tie.idPosition)
+                    actual = 'l'+str(tie.level) + ' ' + position.name + ' ' + 'w'+str(tie.winrate)
+                    name = champ.name
+                    if name in champDat:
+                        anterior = datos.get(name)
+                        upgrade = actual+ ' ' + anterior
+                        datos.update({name: upgrade})
+                        dat.append(actual)
+                    else:    
+                        datos.update({ name: actual})
+                        champDat.append(name)
+            values = datos.values()
+            values = list(values)
+           
+            d = {'Nombre': champDat , 'Valores' : values}
+            df = pd.DataFrame(data = d , index = champDat)
+            df = df[['Nombre','Valores']]
+
+            df.head()
+            df['Key_words'] = ""
+            for index, row in df.iterrows():
+
+                valor = row['Valores']
+                r = Rake()
+                r.extract_keywords_from_text(valor)
+                key_words_dict_scores = r.get_word_degrees()
+                row['Key_words'] = str(list(key_words_dict_scores.keys()))
+            df.drop(columns = ['Valores'], inplace = True)
+
+            count = CountVectorizer()
+            count_matrix = count.fit_transform(df['Key_words'])
+            
+                
+            cosine_sim = cosine_similarity(count_matrix, count_matrix)
+            indices = pd.Series(df.index)
+            recommended_champs = []
+            champion_name =formulario.cleaned_data['champion_name']
+
+            idx = indices[indices == champion_name ].index[0]
+            score_series = pd.Series(cosine_sim[idx]).sort_values(ascending = False)
+
+            top_10_indexes = list(score_series.iloc[1:11].index)
+
+            for i in top_10_indexes:
+
+                recommended_champs.append(list(df.index)[i])
+            campeones = []            
+            for name_c in recommended_champs:
+                campeones.append(Champion.objects.get(name=name_c))
+    return render(request, 'campeones_recomendados.html', {'campeones': campeones, 'STATIC_URL': settings.STATIC_URL})
