@@ -519,45 +519,43 @@ def list_jugadores(request):
 
 
 def mejores_campeones(request):
-    idChampions = Tier.objects.filter(idPosition_id=1).annotate(
-        avg_rating=Avg('winrate')).order_by('-avg_rating').values('idChampion')[:3]
-    campeones_bot = []
+    idChampions = Tier.objects.filter(idPosition_id=1).annotate(avg_rating=Avg('winrate')).order_by('-avg_rating').values('idChampion', 'winrate')[:3]
+    campeones_bot_winrate = {}
     for id in idChampions:
-        campeones_bot.append(Champion.objects.get(idChampion=id['idChampion']))
+        champ = Champion.objects.get(idChampion=id['idChampion'])
+        campeones_bot_winrate[champ] = id['winrate']
 
-    idChampions = Tier.objects.filter(idPosition_id=2).annotate(
-        avg_rating=Avg('winrate')).order_by('-avg_rating').values('idChampion')[:3]
-    campeones_mid = []
+    idChampions = Tier.objects.filter(idPosition_id=2).annotate(avg_rating=Avg('winrate')).order_by('-avg_rating').values('idChampion', 'winrate')[:3]
+    campeones_mid_winrate = {}
     for id in idChampions:
-        campeones_mid.append(Champion.objects.get(idChampion=id['idChampion']))
+        champ = Champion.objects.get(idChampion=id['idChampion'])
+        campeones_mid_winrate[champ] = id['winrate']
 
-    idChampions = Tier.objects.filter(idPosition_id=3).annotate(
-        avg_rating=Avg('winrate')).order_by('-avg_rating').values('idChampion')[:3]
-    campeones_jungle = []
+    idChampions = Tier.objects.filter(idPosition_id=3).annotate(avg_rating=Avg('winrate')).order_by('-avg_rating').values('idChampion', 'winrate')[:3]
+    campeones_jungle_winrate = {}
     for id in idChampions:
-        campeones_jungle.append(
-            Champion.objects.get(idChampion=id['idChampion']))
+        champ = Champion.objects.get(idChampion=id['idChampion'])
+        campeones_jungle_winrate[champ] = id['winrate']
 
-    idChampions = Tier.objects.filter(idPosition_id=4).annotate(
-        avg_rating=Avg('winrate')).order_by('-avg_rating').values('idChampion')[:3]
-    campeones_top = []
+    idChampions = Tier.objects.filter(idPosition_id=4).annotate(avg_rating=Avg('winrate')).order_by('-avg_rating').values('idChampion', 'winrate')[:3]
+    campeones_top_winrate = {}
     for id in idChampions:
-        campeones_top.append(Champion.objects.get(idChampion=id['idChampion']))
+        champ = Champion.objects.get(idChampion=id['idChampion'])
+        campeones_top_winrate[champ] = id['winrate']
 
-    idChampions = Tier.objects.filter(idPosition_id=5).annotate(
-        avg_rating=Avg('winrate')).order_by('-avg_rating').values('idChampion')[:3]
-    campeones_support = []
+    idChampions = Tier.objects.filter(idPosition_id=5).annotate(avg_rating=Avg('winrate')).order_by('-avg_rating').values('idChampion', 'winrate')[:3]
+    campeones_support_winrate = {}
     for id in idChampions:
-        campeones_support.append(
-            Champion.objects.get(idChampion=id['idChampion']))
+        champ = Champion.objects.get(idChampion=id['idChampion'])
+        campeones_support_winrate[champ] = id['winrate']
 
-    idChampions = Tier.objects.annotate(avg_rating=Avg('winrate')).order_by(
-        '-avg_rating').values('idChampion')[:3]
-    campeones = []
+    idChampions = Tier.objects.annotate(avg_rating=Avg('winrate')).order_by('-avg_rating').values('idChampion', 'winrate')[:3]
+    campeones_winrate = {}
     for id in idChampions:
-        campeones.append(Champion.objects.get(idChampion=id['idChampion']))
+        champ = Champion.objects.get(idChampion=id['idChampion'])
+        campeones_winrate[champ] = id['winrate']
 
-    return render(request, 'mejores_campeones.html', {'campeones': campeones, 'campeones_bot': campeones_bot, 'campeones_mid': campeones_mid, 'campeones_jungle': campeones_jungle, 'campeones_top': campeones_top, 'campeones_support': campeones_support,
+    return render(request, 'mejores_campeones.html', {'campeones': campeones_winrate, 'campeones_bot': campeones_bot_winrate, 'campeones_mid': campeones_mid_winrate, 'campeones_jungle': campeones_jungle_winrate, 'campeones_top': campeones_top_winrate, 'campeones_support': campeones_support_winrate,
                                                    'STATIC_URL': settings.STATIC_URL})
 
 
