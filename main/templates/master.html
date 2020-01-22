@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang='es'>
-  <head>
+
+<head>
 	<meta charset='utf-8'>
 
 		<link rel="stylesheet" href="{{STATIC_URL}}css/uikit.min.css" />
@@ -24,17 +25,22 @@
 		        <li class="{% block best_campeones %} {% endblock %}"><a href="/mejores_campeones">Mejores campeones</a></li>
 				<li class="{% block best_jugadores %} {% endblock %}"><a href="/mejores_jugadores">Mejores jugadores</a></li>
 				<li class="{% block campeones_posicion %} {% endblock %}"><a href="/campeones_posicion">Lista de campeones por posición</a></li>
-		        <li><a href="/">Inicio</a></li>
+				<li class="{% block counterest_campeones %} {% endblock %}"><a href="/counterest_campeones">Campeones
+					que más hacen counter</a></li>
+				<li class="{% block weak_campeones %} {% endblock %}"><a href="/weak_campeones">Campeones más
+					débiles</a></li>
+				<li><a href="/">Inicio</a></li>
 		    </ul>
 		</nav>
 
 		<hr>
- 		
- 		<h1 class="uk-article-title">{% block titulo %} {% endblock %}</h1>
+
+		<h1 class="uk-article-title">{% block titulo %} {% endblock %}</h1>
 
 		<div class="contenido">
-		{% block contenido %} {% endblock %}
+			{% block contenido %} {% endblock %}
 		</div>
 	</div>
-  </body>
+</body>
+
 </html>

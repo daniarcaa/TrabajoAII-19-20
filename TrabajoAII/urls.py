@@ -25,5 +25,7 @@ urlpatterns = [
     path('list_jugadores/', views.list_jugadores),
     path('mejores_campeones/', views.mejores_campeones),
     path('mejores_jugadores/', views.mejores_jugadores),
+    path('counterest_campeones/', views.counterestChamps),
+    path('weak_campeones/', views.weakChamps),
     path('campeones_posicion/', views.list_campeones_por_posicion),
 ]
