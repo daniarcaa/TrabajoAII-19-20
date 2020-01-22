@@ -12,7 +12,7 @@ from whoosh.qparser import MultifieldParser, QueryParser
 from django.conf import settings
 
 from datetime import datetime
-from main.forms import ChampionBusquedaForm, PlayerBusquedaForm, TierBusquedaForm, PositionBusquedaForm, PositionTierBusquedaForm
+from main.forms import ChampionBusquedaForm, PlayerBusquedaForm, TierBusquedaForm, PositionBusquedaForm, PositionTierBusquedaForm, ChampionDatesBusquedaForm
 from django.db.models import Avg, Count
 from main.models import Champion, Skill, Position, Tier, Player
 
@@ -538,6 +538,19 @@ def getPlayerByName(request):
                 name=formulario.cleaned_data['player_name'])
     return render(request, 'busqueda_players.html', {'formulario': formulario, 'jugadores': jugadores, 'STATIC_URL': settings.STATIC_URL})
 
+def getChampionByRangeDates(request):
+    formulario = ChampionDatesBusquedaForm()
+    campeones = None
+    skills = None
+    tiers = None
+    positions = []
+    if request.method == 'POST':
+        formulario = ChampionDatesBusquedaForm(request.POST)
+        if formulario.is_valid():
+            campeones = Champion.objects.filter(releaseDate__range=(formulario.cleaned_data['startDate'], formulario.cleaned_data['endDate'])).order_by('releaseDate')
+    return render(request, 'busqueda_champions_fechas.html', {'formulario': formulario, 'campeones': campeones, 'STATIC_URL': settings.STATIC_URL})
+
+
 
 def list_campeones(request):
     campeones = Champion.objects.all().order_by('name')
@@ -651,7 +664,7 @@ def list_campeones_por_posicion(request):
                 idPosition = Position.objects.get(
                     name=formulario.cleaned_data['positionName'])
                 idChampions = Tier.objects.filter(
-                    idPosition_id=idPosition).values('idChampion')
+                    idPosition_id=idPosition).values('idChampion').order_by('idChampion')
                 campeones = []
                 for id in idChampions:
                     campeones.append(Champion.objects.get(

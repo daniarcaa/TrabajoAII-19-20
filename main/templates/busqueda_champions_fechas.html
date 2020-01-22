@@ -1,0 +1,44 @@
+{% extends 'master.html' %}
+
+{% block titulo %} Busqueda de campeones por rango de fechas {% endblock %}
+
+
+{% block buscarChampionDates %} uk-active {% endblock %}
+
+{% block paginaActiva %}
+<li class="uk-active"><span>Busqueda de campeones por fechas</span></li>
+{% endblock %}
+
+
+{% block contenido %}
+<div class="uk-animation-slide-bottom">
+    <form class="uk-form" id="formulario" method="post" action=''>{% csrf_token %}
+        <fieldset>
+            <legend>Fechas</legend>
+            <label for="startDate">Fecha de inicio</label>
+            <input type="date" name="startDate" id="startDate" placeholder="Fecha de inicio" />
+            <label for="endDate">Fecha de fin</label>
+            <input type="date" name="endDate" id="endDate" placeholder="Fecha de fin" />
+            <br><br>
+
+            <input class="uk-button" type='submit' value='Realizar Busqueda' />
+        </fieldset>
+    </form>
+
+    <hr>
+
+    {% if campeones %}
+    <dl class="uk-description-list-line">
+
+        {% for row in campeones %}
+        <dt>{{row.name}}</dt>
+        <dt><img id="output" name="img" alt="Display Picture" src="{{row.image}}" /></dt>
+        <dt>{{row.releaseDate}}</dt>
+
+        {% endfor %}
+
+    </dl>
+
+    {% endif %}
+</div>
+{% endblock %}
