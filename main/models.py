@@ -21,8 +21,7 @@ class Skill(models.Model):
     name = models.CharField(verbose_name='Name', max_length=30)
     description = models.CharField(verbose_name='Description', max_length=3000)
     video = models.URLField(max_length=200)
-    champion = models.ForeignKey(
-        'Champion', verbose_name='Champion', on_delete=models.SET_NULL, null=True)
+    champion = models.ForeignKey('Champion', verbose_name='Champion', on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.name + ' ' + self.description + ' ' + self.video
@@ -43,16 +42,12 @@ class Position(models.Model):
 
 
 class Tier(models.Model):
-    level = models.PositiveSmallIntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(5)])
-    idChampion = models.ForeignKey(
-        Champion, on_delete=models.CASCADE, related_name='idChampionTier')
-    idPosition = models.ForeignKey(
-        Position, on_delete=models.CASCADE, related_name='idPositionTier')
-    idsChampionCounter = models.ManyToManyField(
-        'Champion', related_name='ChampionCounter')
-    idsChampionStronger = models.ManyToManyField(
-        'Champion', related_name='ChampionStronger')
+    idTier = models.AutoField(primary_key=True)
+    level = models.PositiveSmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+    idChampion = models.ForeignKey(Champion, on_delete=models.CASCADE, related_name='idChampionTier')
+    idPosition = models.ForeignKey(Position, on_delete=models.CASCADE, related_name='idPositionTier')
+    idsChampionCounter = models.ManyToManyField('Champion', related_name='ChampionCounter')
+    idsChampionStronger = models.ManyToManyField('Champion', related_name='ChampionStronger')
     winrate = models.DecimalField(max_digits=3, decimal_places=2)
     def __str__(self):
         return self.level
