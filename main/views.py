@@ -593,5 +593,14 @@ def list_campeones_por_posicion(request):
     return render(request, 'campeones_posicion.html', {'campeones_bot': campeones_bot, 'campeones_mid': campeones_mid, 'campeones_jungle': campeones_jungle, 'campeones_top': campeones_top, 'campeones_support': campeones_support,
                                                    'STATIC_URL': settings.STATIC_URL})
 
+def list_campeones_por_posicion_tier(request):
+    idPosition = Position.objects.filter(name = request.GET[name])
+    idChampions = Tier.objects.filter(idPosition_id=idPosition && level=request.GET[level]).values('idChampion')
+    campeones = []
+    for id in idChampions:
+        campeones.append(Champion.objects.get(idChampion=id['idChampion']))
+
+    return render(request, 'campeones_posicion_nivel.html', {'campeones': campeones, 'STATIC_URL': settings.STATIC_URL})
+
 # getChampsInfo()
 # getPlayerInfo()
