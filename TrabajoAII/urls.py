@@ -28,4 +28,6 @@ urlpatterns = [
     path('counterest_campeones/', views.counterestChamps),
     path('weak_campeones/', views.weakChamps),
     path('campeones_posicion/', views.list_campeones_por_posicion),
+    path('seach_champion/', views.getChampionByName),
+    path('seach_player/', views.getPlayerByName)
 ]

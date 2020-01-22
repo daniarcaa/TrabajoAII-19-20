@@ -1,0 +1,38 @@
+{% extends 'master.html' %}
+
+{% block titulo %} Busqueda de jugadores por nombre {% endblock %}
+
+
+{% block buscarPlayer %} uk-active {% endblock %}
+
+{% block paginaActiva %}
+<li class="uk-active"><span>Busqueda de jugadores</span></li>
+{% endblock %}
+
+
+{% block contenido %}
+<div class="uk-animation-slide-bottom">
+    <form class="uk-form" id="formulario" method="post" action=''>{% csrf_token %}
+        <fieldset>
+            <legend>Búsqueda de Campeones</legend>
+            <input type="text" name="player_name" id="player_name" placeholder="Nombre del jugador" />
+            <BR><BR>
+
+            <input class="uk-button" type='submit' value='Realizar Busqueda' />
+        </fieldset>
+    </form>
+
+    <hr>
+
+    {% if jugadores %}
+    <dl class="uk-description-list-line">
+
+        {% for row in jugadores %}
+        <dt>{{row.name}}</dt>
+        {% endfor %}
+
+    </dl>
+
+    {% endif %}
+</div>
+{% endblock %}
