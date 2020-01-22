@@ -1,0 +1,48 @@
+{% extends 'master.html' %}
+
+{% block titulo %} Recomendación de jugadores {% endblock %}
+
+
+{% block recommendPlayer %} uk-active {% endblock %}
+
+{% block paginaActiva %}
+<li class="uk-active"><span>Recomendación de jugadores</span></li>
+{% endblock %}
+
+
+{% block contenido %}
+<div class="uk-animation-slide-bottom">
+    <form class="uk-form" id="formulario" method="post" action=''>{% csrf_token %}
+        <fieldset>
+            <legend>Búsqueda de Campeones</legend>
+            <input type="text" name="player_name" id="player_name" placeholder="Nombre del jugador" />
+            <BR><BR>
+
+            <input class="uk-button" type='submit' value='Realizar Busqueda' />
+        </fieldset>
+    </form>
+
+    <hr>
+
+
+    {% if jugadores %}
+    <dl class="uk-description-list-line">
+
+        {% for row in jugadores %}
+        <dt>{{row.name}}</dt>
+        <dt>{{row.urlPerfil}}</dt>
+        <dt>{{row.ranking}}</dt>
+        <dt>{{row.winrate}}</dt>
+        </dd>
+        <dd> Campeones usados:
+            {% for champ in row.idsChampion.all %}
+            {{champ.name}}
+            <img id="output" name="img" alt="Display Picture" src="{{champ.image}}" />
+            {% endfor %}
+        </dd>
+        {% endfor %}
+    </dl>
+
+    {% endif %}
+</div>
+{% endblock %}

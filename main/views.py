@@ -759,3 +759,64 @@ def recomendacionChampion(request):
             for name_c in recommended_champs:
                 campeones.append(Champion.objects.get(name=name_c))
     return render(request, 'campeones_recomendados.html', {'campeones': campeones, 'STATIC_URL': settings.STATIC_URL})
+
+
+def recomendacionPlayer(request):
+    formulario = PlayerBusquedaForm()
+    jugadores = None
+    dat= []
+    playerDat = []
+    datos = {}
+    if request.method=='POST':
+        formulario = PlayerBusquedaForm(request.POST)
+        
+        if formulario.is_valid():
+            jugadores = Player.objects.all()
+            for player in jugadores:
+                idsChampions = player.idsChampion.all()
+                name_p = player.name
+                for champ in idsChampions:
+                    name_player = player.name
+                    actual = []
+                    actual.append(champ.name)
+                datos.update({name_player : (str(actual) + ' w' + str(player.winrate))})
+                playerDat.append(name_p)
+            values = datos.values()
+            values = list(values)
+           
+            d = {'Nombre': playerDat , 'Valores' : values}
+            df = pd.DataFrame(data = d , index = playerDat)
+            df = df[['Nombre','Valores']]
+
+            df.head()
+            df['Key_words'] = ""
+            for index, row in df.iterrows():
+
+                valor = row['Valores']
+                r = Rake()
+                r.extract_keywords_from_text(valor)
+                key_words_dict_scores = r.get_word_degrees()
+                row['Key_words'] = str(list(key_words_dict_scores.keys()))
+            df.drop(columns = ['Valores'], inplace = True)
+
+            count = CountVectorizer()
+            count_matrix = count.fit_transform(df['Key_words'])
+            
+                
+            cosine_sim = cosine_similarity(count_matrix, count_matrix)
+            indices = pd.Series(df.index)
+            recommended_player = []
+            player_name =formulario.cleaned_data['player_name']
+
+            idx = indices[indices == player_name ].index[0]
+            score_series = pd.Series(cosine_sim[idx]).sort_values(ascending = False)
+
+            top_10_indexes = list(score_series.iloc[1:11].index)
+
+            for i in top_10_indexes:
+
+                recommended_player.append(list(df.index)[i])
+            jugadores = []            
+            for name_c in recommended_player:
+                jugadores.append(Player.objects.get(name=name_c))
+    return render(request, 'jugadores_recomendados.html', {'jugadores': jugadores, 'STATIC_URL': settings.STATIC_URL})
