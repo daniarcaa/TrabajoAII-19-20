@@ -9,8 +9,20 @@
     	<form class="uk-form" id="formulario" method="post" action=''>{% csrf_token %}
     		<fieldset>
     			<legend>Búsqueda de campeones por nivel y posición</legend>
-                <input type="text" name="positionName" id="positionName" placeholder="Posición"/>
-                <input type="text" name="level" id="level" placeholder="Nivel"/>
+                <select name="positionName" id="positionName" required>
+                    <option value='Bot'>Bot</option>
+                    <option value='Top'>Top</option>
+                    <option value='Mid'>Mid</option>
+                    <option value='Jungle'>Jungle</option>
+                    <option value='Support'>Support</option>
+                </select>
+                <select name="level" id="level" required>
+                    <option value=1>1</option>
+                    <option value=2>2</option>
+                    <option value=3>3</option>
+                    <option value=4>4</option>
+                    <option value=5>5</option>
+                </select>
     			<BR><BR>
 
     			<input class="uk-button" type='submit' value='Realizar Busqueda'/>

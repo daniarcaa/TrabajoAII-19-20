@@ -106,8 +106,10 @@ def getChampsInfo():
         parser2 = BeautifulSoup(file2, 'html.parser')
         champ_info = parser2.find('div', class_='l-champion-statistics-header')
         # Nombre e imagen del campeón
-        champ_name = champ_info.find('h1', class_='champion-stats-header-info__name').string
-        champ_image = champ_info.find('div', class_='champion-stats-header-info__image').find('img')['src']
+        champ_name = champ_info.find(
+            'h1', class_='champion-stats-header-info__name').string
+        champ_image = champ_info.find(
+            'div', class_='champion-stats-header-info__image').find('img')['src']
         name_id_champ[champ_name] = count_champion
 
         # Habilidades del campeón
@@ -326,7 +328,8 @@ def getPlayerInfo():
             seperator = ', '
             champ_list_id = seperator.join(champ_list_id)
             # Se guarda el jugador
-            writer1.add_document(idPlayer=count_players, name=normal_name, urlPerfil=normal_url, ranking=normal_ranking, winrate=normal_winrate, idsChampion=champ_list_id)
+            writer1.add_document(idPlayer=count_players, name=normal_name, urlPerfil=normal_url,
+                                 ranking=normal_ranking, winrate=normal_winrate, idsChampion=champ_list_id)
             # Se incrementa el id del jugador
             count_players = count_players + 1
         # Se incrementa para acceder a la siguiente página
@@ -387,6 +390,7 @@ def populate(request):
     populate_skill()
     populate_tier()
     return render(request, 'index.html', {'STATIC_URL': settings.STATIC_URL})
+
 
 def populateWhoosh(request):
     print("---------------------------------------------------------")
@@ -513,33 +517,38 @@ def getIdByChampionName(champ_name):
         id = row['idChampion']
     return id
 
+
 def getChampionByName(request):
     formulario = ChampionBusquedaForm()
     campeones = None
     skills = None
     tiers = None
     positions = []
-    if request.method=='POST':
+    if request.method == 'POST':
         formulario = ChampionBusquedaForm(request.POST)
-        
+
         if formulario.is_valid():
-            campeones = Champion.objects.filter(name=formulario.cleaned_data['champion_name'])
+            campeones = Champion.objects.filter(
+                name=formulario.cleaned_data['champion_name'])
             for champ in campeones:
-                skills = Skill.objects.filter(champion = champ.idChampion)
-                tiers = Tier.objects.filter(idChampion = champ.idChampion)
+                skills = Skill.objects.filter(champion=champ.idChampion)
+                tiers = Tier.objects.filter(idChampion=champ.idChampion)
                 for tie in tiers:
-                    positions.append(Position.objects.get(name = tie.idPosition))
-    return render(request, 'busqueda_champions.html', {'formulario':formulario,'campeones': campeones, 'skills': skills,'positions':positions,'STATIC_URL': settings.STATIC_URL})
+                    positions.append(Position.objects.get(name=tie.idPosition))
+    return render(request, 'busqueda_champions.html', {'formulario': formulario, 'campeones': campeones, 'skills': skills, 'positions': positions, 'STATIC_URL': settings.STATIC_URL})
+
 
 def getPlayerByName(request):
     formulario = PlayerBusquedaForm()
     jugadores = None
-    if request.method=='POST':
+    if request.method == 'POST':
         formulario = PlayerBusquedaForm(request.POST)
-        
+
         if formulario.is_valid():
-            jugadores = Player.objects.filter(name=formulario.cleaned_data['player_name'])
-    return render(request, 'busqueda_players.html', {'formulario':formulario, 'jugadores': jugadores, 'STATIC_URL': settings.STATIC_URL})
+            jugadores = Player.objects.filter(
+                name=formulario.cleaned_data['player_name'])
+    return render(request, 'busqueda_players.html', {'formulario': formulario, 'jugadores': jugadores, 'STATIC_URL': settings.STATIC_URL})
+
 
 def list_campeones(request):
     campeones = Champion.objects.all().order_by('name')
@@ -552,48 +561,55 @@ def list_jugadores(request):
 
 
 def mejores_campeones(request):
-    idChampions = Tier.objects.filter(idPosition_id=1).annotate(avg_rating=Avg('winrate')).order_by('-avg_rating').values('idChampion', 'winrate')[:3]
+    idChampions = Tier.objects.filter(idPosition_id=1).annotate(avg_rating=Avg(
+        'winrate')).order_by('-avg_rating').values('idChampion', 'winrate')[:3]
     campeones_bot_winrate = {}
     for id in idChampions:
         champ = Champion.objects.get(idChampion=id['idChampion'])
         campeones_bot_winrate[champ] = id['winrate']
 
-    idChampions = Tier.objects.filter(idPosition_id=2).annotate(avg_rating=Avg('winrate')).order_by('-avg_rating').values('idChampion', 'winrate')[:3]
+    idChampions = Tier.objects.filter(idPosition_id=2).annotate(avg_rating=Avg(
+        'winrate')).order_by('-avg_rating').values('idChampion', 'winrate')[:3]
     campeones_mid_winrate = {}
     for id in idChampions:
         champ = Champion.objects.get(idChampion=id['idChampion'])
         campeones_mid_winrate[champ] = id['winrate']
 
-    idChampions = Tier.objects.filter(idPosition_id=3).annotate(avg_rating=Avg('winrate')).order_by('-avg_rating').values('idChampion', 'winrate')[:3]
+    idChampions = Tier.objects.filter(idPosition_id=3).annotate(avg_rating=Avg(
+        'winrate')).order_by('-avg_rating').values('idChampion', 'winrate')[:3]
     campeones_jungle_winrate = {}
     for id in idChampions:
         champ = Champion.objects.get(idChampion=id['idChampion'])
         campeones_jungle_winrate[champ] = id['winrate']
 
-    idChampions = Tier.objects.filter(idPosition_id=4).annotate(avg_rating=Avg('winrate')).order_by('-avg_rating').values('idChampion', 'winrate')[:3]
+    idChampions = Tier.objects.filter(idPosition_id=4).annotate(avg_rating=Avg(
+        'winrate')).order_by('-avg_rating').values('idChampion', 'winrate')[:3]
     campeones_top_winrate = {}
     for id in idChampions:
         champ = Champion.objects.get(idChampion=id['idChampion'])
         campeones_top_winrate[champ] = id['winrate']
 
-    idChampions = Tier.objects.filter(idPosition_id=5).annotate(avg_rating=Avg('winrate')).order_by('-avg_rating').values('idChampion', 'winrate')[:3]
+    idChampions = Tier.objects.filter(idPosition_id=5).annotate(avg_rating=Avg(
+        'winrate')).order_by('-avg_rating').values('idChampion', 'winrate')[:3]
     campeones_support_winrate = {}
     for id in idChampions:
         champ = Champion.objects.get(idChampion=id['idChampion'])
         campeones_support_winrate[champ] = id['winrate']
 
-    idChampions = Tier.objects.annotate(avg_rating=Avg('winrate')).order_by('-avg_rating').values('idChampion', 'winrate')[:3]
+    idChampions = Tier.objects.annotate(avg_rating=Avg('winrate')).order_by(
+        '-avg_rating').values('idChampion', 'winrate')[:3]
     campeones_winrate = {}
     for id in idChampions:
         champ = Champion.objects.get(idChampion=id['idChampion'])
         campeones_winrate[champ] = id['winrate']
 
     return render(request, 'mejores_campeones.html', {'campeones': campeones_winrate, 'campeones_bot': campeones_bot_winrate, 'campeones_mid': campeones_mid_winrate, 'campeones_jungle': campeones_jungle_winrate, 'campeones_top': campeones_top_winrate, 'campeones_support': campeones_support_winrate,
-                                                   'STATIC_URL': settings.STATIC_URL})
+                                                      'STATIC_URL': settings.STATIC_URL})
+
 
 def counterestChamps(request):
     idChampions = Tier.objects.values('idsChampionCounter')
-    
+
     campeones = []
     for id in idChampions:
         campeones.append(id['idsChampionCounter'])
@@ -607,9 +623,10 @@ def counterestChamps(request):
 
     return render(request, 'list_campeones.html', {'campeones': campeones, 'STATIC_URL': settings.STATIC_URL})
 
+
 def weakChamps(request):
     idChampions = Tier.objects.values('idsChampionStronger')
-    
+
     campeones = []
     for id in idChampions:
         campeones.append(id['idsChampionStronger'])
@@ -621,7 +638,7 @@ def weakChamps(request):
     campeones = []
     for id in cam:
         campeones.append(Champion.objects.get(idChampion=id))
-    
+
     return render(request, 'list_campeones.html', {'campeones': campeones, 'STATIC_URL': settings.STATIC_URL})
 
 
@@ -630,48 +647,49 @@ def mejores_jugadores(request):
         avg_rating=Avg('winrate')).order_by('-avg_rating')[:3]
     return render(request, 'list_jugadores.html', {'jugadores': jugadores, 'STATIC_URL': settings.STATIC_URL})
 
+
 def list_campeones_por_posicion(request):
-    idChampions = Tier.objects.filter(idPosition_id=1).values('idChampion')
-    campeones_bot = []
-    for id in idChampions:
-        campeones_bot.append(Champion.objects.get(idChampion=id['idChampion']))
-    
-    idChampions = Tier.objects.filter(idPosition_id=2).values('idChampion')
-    campeones_mid = []
-    for id in idChampions:
-        campeones_mid.append(Champion.objects.get(idChampion=id['idChampion']))
-    
-    idChampions = Tier.objects.filter(idPosition_id=3).values('idChampion')
-    campeones_jungle = []
-    for id in idChampions:
-        campeones_jungle.append(Champion.objects.get(idChampion=id['idChampion']))
-    
-    idChampions = Tier.objects.filter(idPosition_id=4).values('idChampion')
-    campeones_top = []
-    for id in idChampions:
-        campeones_top.append(Champion.objects.get(idChampion=id['idChampion']))
-
-    idChampions = Tier.objects.filter(idPosition_id=5).values('idChampion')
-    campeones_support = []
-    for id in idChampions:
-        campeones_support.append(Champion.objects.get(idChampion=id['idChampion']))
-
-    return render(request, 'campeones_posicion.html', {'campeones_bot': campeones_bot, 'campeones_mid': campeones_mid, 'campeones_jungle': campeones_jungle, 'campeones_top': campeones_top, 'campeones_support': campeones_support,
-                                                   'STATIC_URL': settings.STATIC_URL})
-
-def list_campeones_por_posicion_tier(request):
     formulario = PositionBusquedaForm()
     campeones = None
 
-    if request.method=='POST':
-        formulario = PositionTierBusquedaForm(request.POST)
-        
+    if request.method == 'POST':
+        formulario = PositionBusquedaForm(request.POST)
+
         if formulario.is_valid():
-            idPosition = Position.objects.get(name = formulario.cleaned_data['positionName'])
-            idChampions = Tier.objects.filter(idPosition_id=idPosition, level=formulario.cleaned_data['level']).values('idChampion')
-            campeones = []
-            for id in idChampions:
-                campeones.append(Champion.objects.get(idChampion=id['idChampion']))
+            data = formulario.cleaned_data['positionName']
+            pos = ['Top', 'Bot', 'Support', 'Jungle', 'Mid']
+            if data in pos:
+                idPosition = Position.objects.get(
+                    name=formulario.cleaned_data['positionName'])
+                idChampions = Tier.objects.filter(
+                    idPosition_id=idPosition).values('idChampion')
+                campeones = []
+                for id in idChampions:
+                    campeones.append(Champion.objects.get(
+                        idChampion=id['idChampion']))
+
+    return render(request, 'campeones_posicion.html', {'campeones': campeones, 'STATIC_URL': settings.STATIC_URL})
+
+
+def list_campeones_por_posicion_tier(request):
+    formulario = PositionTierBusquedaForm()
+    campeones = None
+
+    if request.method == 'POST':
+        formulario = PositionTierBusquedaForm(request.POST)
+
+        if formulario.is_valid():
+            data = formulario.cleaned_data['positionName']
+            pos = ['Top', 'Bot', 'Support', 'Jungle', 'Mid']
+            if data in pos:
+                idPosition = Position.objects.get(
+                    name=formulario.cleaned_data['positionName'])
+                idChampions = Tier.objects.filter(
+                    idPosition_id=idPosition, level=formulario.cleaned_data['level']).values('idChampion')
+                campeones = []
+                for id in idChampions:
+                    campeones.append(Champion.objects.get(
+                        idChampion=id['idChampion']))
 
     return render(request, 'buscar_camp_pos_lev.html', {'campeones': campeones, 'STATIC_URL': settings.STATIC_URL})
 
