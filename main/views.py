@@ -473,5 +473,5 @@ def mejores_jugadores(request):
     return render(request, 'mejores_jugadores.html', {'STATIC_URL': settings.STATIC_URL})
 
 
-#getChampsInfo()
-#getPlayerInfo()
+# getChampsInfo()
+# getPlayerInfo()

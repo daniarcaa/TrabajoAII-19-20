@@ -14,7 +14,7 @@
 		    	<div class="uk-accordion-content">
 		    		<ul class="uk-list uk-list-striped">
 		    		{% for player in group.list %}
-						<li><strong>Nombre del jugador:</strong> {{player.name}} | <strong>Id jugador:</strong> {{player.idPlayer}} | <strong>URL perfil:</strong> <a href="{{player.urlPerfil}}">{{player.urlPerfil}}</a> | <strong>Puesto en el ranking:</strong> {{player.ranking}} | <strong>Porcentaje de victorias/derrotas:</strong> {{player.winrate}}</li>
+						<li><strong>Nombre del jugador:</strong> {{player.name}} | <strong>Id jugador:</strong> {{player.idPlayer}} | <strong>URL perfil:</strong> <a target="_blank" href="{{player.urlPerfil}}">{{player.urlPerfil}}</a> | <strong>Puesto en el ranking:</strong> {{player.ranking}} | <strong>Porcentaje de victorias/derrotas:</strong> {{player.winrate}}</li>
 					{% endfor %}
 				    </ul>
 		    	</div>

@@ -1,3 +1,110 @@
 {% extends 'master.html' %}
 
 {% block titulo %} Lista de los mejores campeones {% endblock %}
+
+{% block list_campeones %} uk-active {% endblock %}
+
+
+{% block contenido %}
+<div class="uk-animation-fade">
+    <div class="uk-accordion" data-uk-accordion="{collapse: false}">
+        <h3 class="uk-accordion-title">Mejores campeones global:</h3>
+        {% regroup campeones by name as grouped %}
+        {% for group in grouped %}
+        <div class="uk-accordion-content">
+            <ul class="uk-list uk-list-striped">
+                {% for champion in group.list %}
+                <li><strong>Nombre del campeón:</strong> {{champion.name}} | <strong>Imagen:</strong> <img id="output"
+                        name="img" alt="Display Picture" src="{{champion.image}}" /></li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="uk-animation-fade">
+    <div class="uk-accordion" data-uk-accordion="{collapse: false}">
+        <h3 class="uk-accordion-title">Mejores campeones linea superior:</h3>
+        {% regroup campeones_top by name as grouped %}
+        {% for group in grouped %}
+        <div class="uk-accordion-content">
+            <ul class="uk-list uk-list-striped">
+                {% for champion in group.list %}
+                <li><strong>Nombre del campeón:</strong> {{champion.name}} | <strong>Imagen:</strong> <img id="output"
+                        name="img" alt="Display Picture" src="{{champion.image}}" /></li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="uk-animation-fade">
+    <div class="uk-accordion" data-uk-accordion="{collapse: false}">
+        <h3 class="uk-accordion-title">Mejores campeones linea central:</h3>
+        {% regroup campeones_mid by name as grouped %}
+        {% for group in grouped %}
+        <div class="uk-accordion-content">
+            <ul class="uk-list uk-list-striped">
+                {% for champion in group.list %}
+                <li><strong>Nombre del campeón:</strong> {{champion.name}} | <strong>Imagen:</strong> <img id="output"
+                        name="img" alt="Display Picture" src="{{champion.image}}" /></li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="uk-animation-fade">
+    <div class="uk-accordion" data-uk-accordion="{collapse: false}">
+        <h3 class="uk-accordion-title">Mejores campeones linea inferior:</h3>
+        {% regroup campeones_bot by name as grouped %}
+        {% for group in grouped %}
+        <div class="uk-accordion-content">
+            <ul class="uk-list uk-list-striped">
+                {% for champion in group.list %}
+                <li><strong>Nombre del campeón:</strong> {{champion.name}} | <strong>Imagen:</strong> <img id="output"
+                        name="img" alt="Display Picture" src="{{champion.image}}" /></li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="uk-animation-fade">
+    <div class="uk-accordion" data-uk-accordion="{collapse: false}">
+        <h3 class="uk-accordion-title">Mejores campeones jungla:</h3>
+        {% regroup campeones_jungle by name as grouped %}
+        {% for group in grouped %}
+        <div class="uk-accordion-content">
+            <ul class="uk-list uk-list-striped">
+                {% for champion in group.list %}
+                <li><strong>Nombre del campeón:</strong> {{champion.name}} | <strong>Imagen:</strong> <img id="output"
+                        name="img" alt="Display Picture" src="{{champion.image}}" /></li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="uk-animation-fade">
+    <div class="uk-accordion" data-uk-accordion="{collapse: false}">
+        <h3 class="uk-accordion-title">Mejores campeones de apoyo:</h3>
+        {% regroup campeones_support by name as grouped %}
+        {% for group in grouped %}
+        <div class="uk-accordion-content">
+            <ul class="uk-list uk-list-striped">
+                {% for champion in group.list %}
+                <li><strong>Nombre del campeón:</strong> {{champion.name}} | <strong>Imagen:</strong> <img id="output"
+                        name="img" alt="Display Picture" src="{{champion.image}}" /></li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
