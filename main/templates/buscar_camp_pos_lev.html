@@ -1,0 +1,40 @@
+{% extends 'master.html' %}
+
+{% block titulo %} Búsqueda de campeones por nivel y posición {% endblock %}
+
+{% block buscar_camp_pos_lev.html %} uk-active {% endblock %}
+
+{% block contenido %} 
+    <div class="uk-animation-slide-bottom">
+    	<form class="uk-form" id="formulario" method="post" action=''>{% csrf_token %}
+    		<fieldset>
+    			<legend>Búsqueda de campeones por nivel y posición</legend>
+                <input type="text" name="positionName" id="positionName" placeholder="Posición"/>
+                <input type="text" name="level" id="level" placeholder="Nivel"/>
+    			<BR><BR>
+
+    			<input class="uk-button" type='submit' value='Realizar Busqueda'/>
+    		</fieldset>
+    	</form>
+	    
+        <hr>
+        
+        {% if campeones %}
+            <div class="uk-animation-fade">
+                <div class="uk-accordion" data-uk-accordion="{collapse: false}">
+                    {% regroup campeones by name as grouped %}
+                    {% for group in grouped %}
+                        <!-- <h3 class="uk-accordion-title">Nombre del campeón: {{group.grouper}} ({{group.list|length}} jugadores)</h3> -->
+                        <div class="uk-accordion-content">
+                            <ul class="uk-list uk-list-striped">
+                            {% for champion in group.list %}
+                                <li><strong>Nombre del campeón:</strong> {{champion.name}} | <strong>Imagen:</strong> <img id="output" name="img" alt="Display Picture" src="{{champion.image}}" /></li>
+                            {% endfor %}
+                            </ul>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+	</div>
+{% endblock %}    

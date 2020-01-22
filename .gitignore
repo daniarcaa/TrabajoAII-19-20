@@ -6,6 +6,7 @@ __pycache__/
 # C extensions
 *.so
 info_champ/
+main/migrations/
 
 # Distribution / packaging
 .Python
