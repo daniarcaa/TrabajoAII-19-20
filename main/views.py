@@ -155,9 +155,13 @@ def getChampsInfo():
             champ_info = parser3.find('div', class_='l-champion-statistics-header')
 
             # Nivel del campeón según la posición
-            tier = champ_info.find('div', class_='champion-stats-header-info__tier').find('b').string
-            tier = re.match(r'.*(\d)', tier)
-            tier = tier.groups()[0]
+            tier = champ_info.find('div', class_='champion-stats-header-info__tier').find('b')
+            if tier is None:
+                tier = 5
+            else:
+                tier = tier.string
+                tier = re.match(r'.*(\d)', tier)
+                tier = tier.groups()[0]
             position_tier[p] = int(tier)
 
             # Campeones contra los que es débil el campeón 'c' según la posición
