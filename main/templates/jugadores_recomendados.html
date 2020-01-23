@@ -1,48 +1,45 @@
 {% extends 'master.html' %}
 
-{% block titulo %} Recomendación de jugadores {% endblock %}
-
-
-{% block recommendPlayer %} uk-active {% endblock %}
-
-{% block paginaActiva %}
-<li class="uk-active"><span>Recomendación de jugadores</span></li>
-{% endblock %}
-
+{% block titulo %} Búsqueda de jugadores recomendados según uno dado {% endblock %}
 
 {% block contenido %}
-<div class="uk-animation-slide-bottom">
-    <form class="uk-form" id="formulario" method="post" action=''>{% csrf_token %}
-        <fieldset>
-            <legend>Búsqueda de Campeones</legend>
-            <input type="text" name="player_name" id="player_name" placeholder="Nombre del jugador" />
-            <BR><BR>
-
-            <input class="uk-button" type='submit' value='Realizar Busqueda' />
-        </fieldset>
+<div class="jumbotron text-center col-6">
+    <form id="formulario" method="post" action='' class="form-signin">{% csrf_token %}
+        <fieldset class="form-group">
+            <label for="player_name" class="h4">Nombre del jugador</label>
+            <input class="form-control d-inline" type="text" name="player_name" id="champion_name" placeholder="Nombre del jugador" />
+            <button class="btn btn-secondary btn-block d-inline mt-2" type="submit">Realizar búsqueda</button>
+        </fieldset class="form-group">
     </form>
-
-    <hr>
-
-
-    {% if jugadores %}
-    <dl class="uk-description-list-line">
-
-        {% for row in jugadores %}
-        <dt>{{row.name}}</dt>
-        <dt>{{row.urlPerfil}}</dt>
-        <dt>{{row.ranking}}</dt>
-        <dt>{{row.winrate}}</dt>
-        </dd>
-        <dd> Campeones usados:
-            {% for champ in row.idsChampion.all %}
-            {{champ.name}}
-            <img id="output" name="img" alt="Display Picture" src="{{champ.image}}" />
-            {% endfor %}
-        </dd>
-        {% endfor %}
-    </dl>
-
-    {% endif %}
 </div>
+
+{% if jugadores %}
+<div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 text-center table-responsive">
+	<table class="table table-striped table-hover table-info" style="margin-bottom: 550px;">
+		<thead class="thead-dark">
+			<tr class="text-center">
+				<th class="align-middle" scope="col">#</th>
+				<th class="align-middle" scope="col">Nombre del jugador</th>
+				<th class="align-middle" scope="col">Enlace a su perfil</th>
+				<th class="align-middle" scope="col">Puesto de posicionamiento</th>
+				<th class="align-middle" scope="col">Porcentaje de victorias</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% regroup jugadores by name as grouped %}
+			{% for group in grouped %}
+				{% for player in group.list %}
+				<tr class="text-center">
+					<th class="align-middle" scope="row">{{forloop.parentloop.counter}}</th>
+					<td class="align-middle">{{player.name}}</td>
+					<td class="align-middle"><a target=_blank href="{{player.urlPerfil}}">{{player.urlPerfil}}</a></td>
+					<td class="align-middle">{{player.ranking}}</td>
+					<td class="align-middle">{{player.winrate}} %</td>
+				</tr>
+				{% endfor %}
+			{% endfor %}		
+		</tbody>
+	</table>
+</div>
+{% endif %}
 {% endblock %}

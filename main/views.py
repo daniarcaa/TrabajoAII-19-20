@@ -357,7 +357,15 @@ def schemaPlayers():
     return schema
 
 
-@login_required(login_url='/ingresar')
+@login_required(login_url='/ingresar_whoosh')
+def populateWhoosh(request):
+    print('---------------------------------------------------------')
+    getChampsInfo()
+    getPlayerInfo()
+    logout(request)
+    return(HttpResponseRedirect('/index'))
+
+@login_required(login_url='/ingresar_django')
 def populateDjango(request):
     print('---------------------------------------------------------')
     populate_position()
@@ -368,38 +376,7 @@ def populateDjango(request):
     logout(request)
     return(HttpResponseRedirect('/index'))
 
-
-@login_required(login_url='/ingresar')
-def populateWhoosh(request):
-    print('---------------------------------------------------------')
-    getChampsInfo()
-    getPlayerInfo()
-    logout(request)
-    return(HttpResponseRedirect('/index'))
-
-
 def ingresarWhoosh(request):
-    if request.user.is_authenticated:
-        return(HttpResponseRedirect('/populate_django'))
-    formulario = AuthenticationForm()
-    if request.method == 'POST':
-        formulario = AuthenticationForm(request.POST)
-        usuario = request.POST['username']
-        clave = request.POST['password']
-        acceso = authenticate(username=usuario, password=clave)
-        if acceso is not None:
-            if acceso.is_active:
-                login(request, acceso)
-                return (HttpResponseRedirect('/populate_django'))
-            else:
-                return (HttpResponse('<html><body>Error: usuario no activo </body></html>'))
-        else:
-            return (HttpResponse('<html><body><b>Error: usuario o contrase&ntilde;a incorrectos</b><br><a href=/index>Volver a la página principal</a></body></html>'))
-
-    return render(request, 'ingresar.html', {'formulario': formulario})
-
-
-def ingresarDjango(request):
     if request.user.is_authenticated:
         return(HttpResponseRedirect('/populate_whoosh'))
     formulario = AuthenticationForm()
@@ -417,7 +394,30 @@ def ingresarDjango(request):
         else:
             return (HttpResponse('<html><body><b>Error: usuario o contrase&ntilde;a incorrectos</b><br><a href=/index>Volver a la página principal</a></body></html>'))
 
-    return render(request, 'ingresar.html', {'formulario': formulario})
+    return render(request, 'ingresar_whoosh.html', {'formulario': formulario})
+
+
+def ingresarDjango(request):
+    if request.user.is_authenticated:
+        return(HttpResponseRedirect('/populate_django'))
+    formulario = AuthenticationForm()
+    if request.method == 'POST':
+        formulario = AuthenticationForm(request.POST)
+        usuario = request.POST['username']
+        clave = request.POST['password']
+        print(clave)
+        print(usuario)
+        acceso = authenticate(username=usuario, password=clave)
+        if acceso is not None:
+            if acceso.is_active:
+                login(request, acceso)
+                return (HttpResponseRedirect('/populate_django'))
+            else:
+                return (HttpResponse('<html><body>Error: usuario no activo </body></html>'))
+        else:
+            return (HttpResponse('<html><body><b>Error: usuario o contrase&ntilde;a incorrectos</b><br><a href=/index>Volver a la página principal</a></body></html>'))
+
+    return render(request, 'ingresar_django.html', {'formulario': formulario})
 
 
 def populate_champion():

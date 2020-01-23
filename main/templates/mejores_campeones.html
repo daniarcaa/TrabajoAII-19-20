@@ -1,92 +1,158 @@
 {% extends 'master.html' %}
 
-{% block titulo %} Lista de los mejores campeones {% endblock %}
-
-{% block list_campeones %} uk-active {% endblock %}
-
+{% block titulo %} Top 3 mejores campeones según la posición {% endblock %}
 
 {% block contenido %}
-<div class="uk-animation-fade">
-    <div class="uk-accordion" data-uk-accordion="{collapse: false}">
-        <h3 class="uk-accordion-title">Mejores campeones global:</h3>
-        <div class="uk-accordion-content">
-            <ul class="uk-list uk-list-striped">
-                {% for key, value in campeones.items %}
-                <li><strong>Nombre del campeón:</strong> {{key.name}} | <strong>Imagen:</strong> <img id="output"
-                        name="img" alt="Display Picture" src="{{key.image}}" /> | <strong>Porcentaje de victoria:</strong> {{value}} %</li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
-</div>
-
-<div class="uk-animation-fade">
-    <div class="uk-accordion" data-uk-accordion="{collapse: false}">
-        <h3 class="uk-accordion-title">Mejores campeones de línea superior:</h3>
-        <div class="uk-accordion-content">
-            <ul class="uk-list uk-list-striped">
-                {% for key, value in campeones_top.items %}
-                <li><strong>Nombre del campeón:</strong> {{key.name}} | <strong>Imagen:</strong> <img id="output"
-                        name="img" alt="Display Picture" src="{{key.image}}" /> | <strong>Porcentaje de victoria:</strong> {{value}} %</li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
-</div>
-
-<div class="uk-animation-fade">
-    <div class="uk-accordion" data-uk-accordion="{collapse: false}">
-        <h3 class="uk-accordion-title">Mejores campeones de línea de medio:</h3>
-        <div class="uk-accordion-content">
-            <ul class="uk-list uk-list-striped">
-                {% for key, value in campeones_mid.items %}
-                <li><strong>Nombre del campeón:</strong> {{key.name}} | <strong>Imagen:</strong> <img id="output"
-                        name="img" alt="Display Picture" src="{{key.image}}" /> | <strong>Porcentaje de victoria:</strong> {{value}} %</li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
-</div>
-
-<div class="uk-animation-fade">
-    <div class="uk-accordion" data-uk-accordion="{collapse: false}">
-        <h3 class="uk-accordion-title">Mejores campeones de línea inferior:</h3>
-        <div class="uk-accordion-content">
-            <ul class="uk-list uk-list-striped">
-                {% for key, value in campeones_bot.items %}
-                <li><strong>Nombre del campeón:</strong> {{key.name}} | <strong>Imagen:</strong> <img id="output"
-                        name="img" alt="Display Picture" src="{{key.image}}" /> | <strong>Porcentaje de victoria:</strong> {{value}} %</li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
-</div>
-
-<div class="uk-animation-fade">
-    <div class="uk-accordion" data-uk-accordion="{collapse: false}">
-        <h3 class="uk-accordion-title">Mejores campeones de jungla:</h3>
-        <div class="uk-accordion-content">
-            <ul class="uk-list uk-list-striped">
-                {% for key, value in campeones_jungle.items %}
-                <li><strong>Nombre del campeón:</strong> {{key.name}} | <strong>Imagen:</strong> <img id="output"
-                        name="img" alt="Display Picture" src="{{key.image}}" /> | <strong>Porcentaje de victoria:</strong> {{value}} %</li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
-</div>
-
-<div class="uk-animation-fade">
-    <div class="uk-accordion" data-uk-accordion="{collapse: false}">
-        <h3 class="uk-accordion-title">Mejores campeones de apoyo:</h3>
-        <div class="uk-accordion-content">
-            <ul class="uk-list uk-list-striped">
-                {% for key, value in campeones_support.items %}
-                <li><strong>Nombre del campeón:</strong> {{key.name}} | <strong>Imagen:</strong> <img id="output"
-                        name="img" alt="Display Picture" src="{{key.image}}" /> | <strong>Porcentaje de victoria:</strong> {{value}} %</li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
+<div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 text-center table-responsive">
+	<table class="table table-striped table-hover table-info">
+		<thead class="thead-dark">
+            <tr class="text-center">
+				<th class="align-middle th-dark" colspan="4" scope="col">MEJORES CAMPEONES GLOBALMENTE</th>
+			</tr>
+			<tr class="text-center">
+				<th class="align-middle" scope="col">#</th>
+				<th class="align-middle" scope="col">Nombre del campeón</th>
+				<th class="align-middle" scope="col">Imagen</th>
+				<th class="align-middle" scope="col">Porcentaje de victorias</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for key, value in campeones.items %}
+				<tr class="text-center">
+					<th class="align-middle" scope="row">{{forloop.counter}}</th>
+					<td class="align-middle">{{key.name}}</td>
+					<td class="align-middle"><img class="w-25 p-1" alt="Display Picture" src="{{key.image}}" /></td>
+					<td class="align-middle">{{value}} %</td>
+				</tr>
+			{% endfor %}		
+		</tbody>
+    </table>
+    
+    <table class="table table-striped table-hover table-info">
+		<thead class="thead-dark">
+            <tr class="text-center">
+				<th class="align-middle th-dark" colspan="4" scope="col">MEJORES CAMPEONES DE LA LÍNEA SUPERIOR</th>
+			</tr>
+			<tr class="text-center">
+				<th class="align-middle" scope="col">#</th>
+				<th class="align-middle" scope="col">Nombre del campeón</th>
+				<th class="align-middle" scope="col">Imagen</th>
+				<th class="align-middle" scope="col">Porcentaje de victorias</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for key, value in campeones_top.items %}
+				<tr class="text-center">
+					<th class="align-middle" scope="row">{{forloop.counter}}</th>
+					<td class="align-middle">{{key.name}}</td>
+					<td class="align-middle"><img class="w-25 p-1" alt="Display Picture" src="{{key.image}}" /></td>
+					<td class="align-middle">{{value}} %</td>
+				</tr>
+			{% endfor %}		
+		</tbody>
+    </table>
+    
+    <table class="table table-striped table-hover table-info">
+		<thead class="thead-dark">
+            <tr class="text-center">
+				<th class="align-middle th-dark" colspan="4" scope="col">MEJORES CAMPEONES DE LA LÍNEA MEDIO</th>
+			</tr>
+			<tr class="text-center">
+				<th class="align-middle" scope="col">#</th>
+				<th class="align-middle" scope="col">Nombre del campeón</th>
+				<th class="align-middle" scope="col">Imagen</th>
+				<th class="align-middle" scope="col">Porcentaje de victorias</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for key, value in campeones_mid.items %}
+				<tr class="text-center">
+					<th class="align-middle" scope="row">{{forloop.counter}}</th>
+					<td class="align-middle">{{key.name}}</td>
+					<td class="align-middle"><img class="w-25 p-1" alt="Display Picture" src="{{key.image}}" /></td>
+					<td class="align-middle">{{value}} %</td>
+				</tr>
+			{% endfor %}		
+		</tbody>
+    </table>
+    
+    <table class="table table-striped table-hover table-info">
+		<thead class="thead-dark">
+            <tr class="text-center">
+				<th class="align-middle th-dark" colspan="4" scope="col">MEJORES CAMPEONES DE LA LINEA INFERIOR</th>
+			</tr>
+			<tr class="text-center">
+				<th class="align-middle" scope="col">#</th>
+				<th class="align-middle" scope="col">Nombre del campeón</th>
+				<th class="align-middle" scope="col">Imagen</th>
+				<th class="align-middle" scope="col">Porcentaje de victorias</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for key, value in campeones_bot.items %}
+				<tr class="text-center">
+					<th class="align-middle" scope="row">{{forloop.counter}}</th>
+					<td class="align-middle">{{key.name}}</td>
+					<td class="align-middle"><img class="w-25 p-1" alt="Display Picture" src="{{key.image}}" /></td>
+					<td class="align-middle">{{value}} %</td>
+				</tr>
+			{% endfor %}		
+		</tbody>
+    </table>
+    
+    <table class="table table-striped table-hover table-info">
+		<thead class="thead-dark">
+            <tr class="text-center">
+				<th class="align-middle th-dark" colspan="4" scope="col">MEJORES CAMPEONES DE JUNGLA</th>
+			</tr>
+			<tr class="text-center">
+				<th class="align-middle" scope="col">#</th>
+				<th class="align-middle" scope="col">Nombre del campeón</th>
+				<th class="align-middle" scope="col">Imagen</th>
+				<th class="align-middle" scope="col">Porcentaje de victorias</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for key, value in campeones_jungle.items %}
+				<tr class="text-center">
+					<th class="align-middle" scope="row">{{forloop.counter}}</th>
+					<td class="align-middle">{{key.name}}</td>
+					<td class="align-middle"><img class="w-25 p-1" alt="Display Picture" src="{{key.image}}" /></td>
+					<td class="align-middle">{{value}} %</td>
+				</tr>
+			{% endfor %}		
+		</tbody>
+    </table>
+    
+    <table class="table table-striped table-hover table-info">
+		<thead class="thead-dark">
+            <tr class="text-center">
+				<th class="align-middle th-dark" colspan="4" scope="col">MEJORES CAMPEONES DE APOYO</th>
+			</tr>
+			<tr class="text-center">
+				<th class="align-middle" scope="col">#</th>
+				<th class="align-middle" scope="col">Nombre del campeón</th>
+				<th class="align-middle" scope="col">Imagen</th>
+				<th class="align-middle" scope="col">Porcentaje de victorias</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for key, value in campeones_support.items %}
+				<tr class="text-center">
+					<th class="align-middle" scope="row">{{forloop.counter}}</th>
+					<td class="align-middle">{{key.name}}</td>
+					<td class="align-middle"><img class="w-25 p-1" alt="Display Picture" src="{{key.image}}" /></td>
+					<td class="align-middle">{{value}} %</td>
+				</tr>
+			{% endfor %}		
+		</tbody>
+	</table>
 </div>
 {% endblock %}
+
+
+
+
+
+
+

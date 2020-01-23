@@ -1,24 +1,31 @@
 {% extends 'master.html' %}
 
-{% block titulo %} Lista de los campeones {% endblock %}
+{% block titulo %} Lista de campeones {% endblock %}
 
-{% block list_campeones %} uk-active {% endblock %}
-
-
-{% block contenido %} 
-    <div class="uk-animation-fade">
-	    <div class="uk-accordion" data-uk-accordion="{collapse: false}">
-	    	{% regroup campeones by name as grouped %}
-	    	{% for group in grouped %}
-		    	<!-- <h3 class="uk-accordion-title">Nombre del campeón: {{group.grouper}} ({{group.list|length}} jugadores)</h3> -->
-		    	<div class="uk-accordion-content">
-		    		<ul class="uk-list uk-list-striped">
-		    		{% for champion in group.list %}
-						<li><strong>Nombre del campeón:</strong> {{champion.name}} | <strong>Imagen:</strong> <img id="output" name="img" alt="Display Picture" src="{{champion.image}}" /></li>
-					{% endfor %}
-				    </ul>
-		    	</div>
-	    	{% endfor %}
-		</div>
-	</div>
+{% block contenido %}
+<div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 text-center table-responsive">
+	<table class="table table-striped table-hover table-info" style="margin-bottom: 180px;">
+		<thead class="thead-dark">
+			<tr class="text-center">
+				<th class="align-middle" scope="col">#</th>
+				<th class="align-middle" scope="col">Nombre del campeón</th>
+				<th class="align-middle" scope="col">Imagen</th>
+				<th class="align-middle" scope="col">Fecha de lanzamiento</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% regroup campeones by name as grouped %}
+			{% for group in grouped %}
+				{% for champion in group.list %}
+				<tr class="text-center">
+					<th class="align-middle" scope="row">{{forloop.parentloop.counter}}</th>
+					<td class="align-middle">{{champion.name}}</td>
+					<td class="align-middle"><img class="w-25 p-1" alt="Display Picture" src="{{champion.image}}" /></td>
+					<td class="align-middle">{{champion.releaseDate}}</td>
+				</tr>
+				{% endfor %}
+			{% endfor %}		
+		</tbody>
+	</table>
+</div>
 {% endblock %}

@@ -35,7 +35,7 @@ urlpatterns = [
     path('seach_player/', views.getPlayerByName),
     path('recomend_champion/', views.recomendacionChampion),
     path('recomend_player/', views.recomendacionPlayer),
-    path('ingresar/', views.ingresarWhoosh),
-    path('ingresar/', views.ingresarDjango),
+    path('ingresar_whoosh/', views.ingresarWhoosh),
+    path('ingresar_django/', views.ingresarDjango),
     path('admin/',admin.site.urls)
 ]
